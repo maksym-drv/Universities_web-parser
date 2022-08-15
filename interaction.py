@@ -5,38 +5,53 @@ from selenium.webdriver.common.by import By
 
 specialities = ['122', '123']
 
-options = webdriver.FirefoxOptions()
-options.binary_location = r'/Applications/Firefox.app/Contents/MacOS/firefox'
-
-driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
-
-driver.get('https://vstup.edbo.gov.ua/offers/')
-
-sleep(1)
-
-list_button = driver.find_element(by=By.XPATH, value='//*[@id="search-form-general"]/div[2]/div/div[1]/button')
-
-for speciality in specialities:
-
-    list_button.click()
-
-    spec_input = driver.find_element(by=By.XPATH, value='/html/body/div[2]/div/div[1]/input')
-    spec_input.send_keys(speciality)
-
-    current_spec = driver.find_element(
-            by=By.XPATH, value='//*[@id="bs-select-3"]/ul'
-        ).find_element(
-            by=By.CLASS_NAME, value='active'
-        ).find_element(
-            by=By.CLASS_NAME, value='active'
-        )
-    driver.execute_script("arguments[0].click();", current_spec)
+class Interaction:
+    list_button_path    = '//*[@id="search-form-general"]/div[2]/div/div[1]/button'
+    spec_input_path     = '/html/body/div[2]/div/div[1]/input'
+    select_spec_path    = '//*[@id="bs-select-3"]/ul'
+    search_button_id    = 'offers-search-button'
+    universitis_id      = 'universities'
+    universitis_cl      = 'university'
     
-    driver.find_element(by=By.ID, value='offers-search-button').click()
+    def __init__(self, url: str = 'https://vstup.edbo.gov.ua/offers/') -> None:
+        options = webdriver.FirefoxOptions()
+        options.binary_location = r'/Applications/Firefox.app/Contents/MacOS/firefox'
+        self.__driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
+        self.__url = url
+        sleep(1)
 
-    unis = driver.find_element(by=By.ID, value='universities')
-    for uni in unis.find_elements(by=By.CLASS_NAME, value='university'):
-        uni.click()
+    def get_source(self, speciality: str) -> str:
 
-    with open(f'page_source/{speciality}.html', 'w') as file:
-        file.write(driver.page_source)
+        self.__driver.get(self.__url)
+
+        list_button = self.__driver.find_element(by=By.XPATH, value=self.list_button_path)
+        list_button.click()
+
+        spec_input = self.__driver.find_element(by=By.XPATH, value=self.spec_input_path)
+        spec_input.send_keys(speciality)
+
+        select_spec = self.__driver.find_element(
+                by=By.XPATH, value=self.select_spec_path
+            ).find_element(
+                by=By.CLASS_NAME, value='active'
+            ).find_element(
+                by=By.CLASS_NAME, value='active'
+            )
+        self.__driver.execute_script("arguments[0].click();", select_spec)
+    
+        self.__driver.find_element(by=By.ID, value=self.search_button_id).click()
+
+        unis = self.__driver.find_element(by=By.ID, value=self.universitis_id)
+        for uni in unis.find_elements(by=By.CLASS_NAME, value=self.universitis_cl):
+            uni.click()
+
+        page_source = self.__driver.page_source
+
+        self.__driver.quit()
+
+        return page_source
+
+i = Interaction()
+spec = 122
+with open(f'page_source/{spec}.html', 'w') as file:
+    file.write(i.get_source(spec))
