@@ -26,5 +26,3 @@ RUN set -x \
    && chmod 755 /opt/firefox/firefox
 
 COPY . .
-
-CMD ["python3", "interaction.py"]
