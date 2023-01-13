@@ -1,1 +1,1 @@
-# Web_parser
+# Universities_web_parser
