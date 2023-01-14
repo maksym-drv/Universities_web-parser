@@ -17,5 +17,9 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('parser/', admin.site.urls),
 ]
+
+admin.site.site_header = "Universities Web-parser"
+admin.site.site_title = "Universities"
+admin.site.index_title = "Web-parser"

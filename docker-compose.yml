@@ -1,0 +1,41 @@
+version: "3.7"
+ 
+services:
+  db:
+    container_name: parser_db
+    image: postgres:14.6-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+    env_file:
+      - ./.db.env
+    ports:
+      - "5432:5432"
+
+  web:
+    container_name: parser_app
+    image: web-parser
+    build: .
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --timeout 200
+    volumes:
+      - .:/web-parser
+      - static:/staticfiles/
+    expose:
+      - 8000
+    env_file:
+      - ./.dev.env
+    depends_on:
+      - db
+
+  nginx:
+    container_name: parser_web
+    build: ./nginx
+    volumes:
+      - static:/staticfiles/
+    ports:
+      - 80:80
+    depends_on:
+      - web
+
+volumes:
+  postgres:
+  static:
