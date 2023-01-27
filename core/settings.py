@@ -124,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, '/staticfiles/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
     BASE_DIR / "static"
@@ -134,3 +134,18 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Parser
+
+TARGET_URL = 'https://vstup.edbo.gov.ua/offers/'
+
+TARGET_OPTIONS = {
+    'courses': 'offers-search-course', 
+    'education_bases': 'offers-search-education-base',
+    'forms': 'offers-search-education-form',
+    'qualifications': 'offers-search-qualification',
+    'regions': 'offers-search-region',
+    'specialities': 'offers-search-speciality'
+}
+
+OPTIONS_ROOT = os.path.join(BASE_DIR, 'webparser/options/')
