@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+<div class="container container__lg">
+
+  <h3>My templates</h3>
+
+  <!-- .templates -->
+  <div class="templates">
+
+    {% for template in object_list %}
+
+    <!-- .templatesItem -->
+    <div class="templatesItem">
+
+      <div class="templatesItem__desc">
+
+        <div class="templatesItem__desc__name">
+
+          <span class="templatesItem__icon">
+            <i class="fa-solid fa-file"></i>
+          </span>
+          <a href="#">{{ template.name }}</a>
+        </div>
+
+        <div class="templatesItem__desc__text">
+          <ul>
+            <li>Qualification: <b>{{ template.get_qualification_display }}</b></li>
+            <li>Education base: <b>{{ template.get_education_base_display }}</b></li>
+            <li>Speciality: <b>{{ template.get_speciality_display }}</b></li>
+
+            {% if template.institution %}
+            <li>Institution: <b>{{ template.get_institution_display }}</b></li>
+            {% endif %}
+
+            {% if template.region %}
+            <li>Region: <b>{{ template.get_region_display }}</b></li>
+            {% endif %}
+
+            {% if template.program %}
+            <li>Program: <b>{{ template.get_program_display }}</b></li>
+            {% endif %}
+
+            {% if template.form %}
+            <li>Form: <b>{{ template.get_form_display }}</b></li>
+            {% endif %}
+
+            {% if template.course %}
+            <li>Course: <b>{{ template.get_course_display }}</b></li>
+            {% endif %}
+
+          </ul>
+        </div>
+      </div>
+
+      <div class="templatesItem__buttons">
+        <div class="templatesItem__button">
+          <a href="{% url 'profile' %}" class="button"><i class="fa-solid fa-download"></i> Download</a>
+        </div>
+        <div class="templatesItem__button">
+          <a href="{% url 'profile' %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+        </div>
+      </div>
+    </div><!-- /.templatesItem -->
+
+    {% endfor %}
+
+  </div><!-- /.templates -->
+</div>
+
+{% endblock %}

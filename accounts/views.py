@@ -1,4 +1,5 @@
-from .forms import SignUpForm, UserProfileForm
+from .forms import SignUpForm, UserProfileForm, ChangePasswordForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -7,7 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 
 
-class Profile(SuccessMessageMixin, LoginRequiredMixin, FormView):
+class Profile(LoginRequiredMixin, SuccessMessageMixin, FormView):
 
     form_class = UserProfileForm
     template_name = 'profile.html'
@@ -43,3 +44,30 @@ class SignUp(CreateView):
         if request.user.is_authenticated:
             return redirect('profile')
         return super().dispatch(request, *args, **kwargs)
+
+
+class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, FormView):
+
+    template_name = 'change_password.html'
+    form_class = ChangePasswordForm
+    success_url = reverse_lazy('profile')
+    success_message = 'Password changed successfully'
+
+    def form_valid(self, form):
+        
+        user = self.request.user
+        current_password = form.cleaned_data.get('current_password')
+        new_password = form.cleaned_data.get('new_password')
+        confirm_new_password = form.cleaned_data.get('confirm_new_password')
+
+        if not user.check_password(current_password):
+            form.add_error(None, 'Incorrect current password!')
+            return self.form_invalid(form)
+        elif new_password != confirm_new_password:
+            form.add_error('new_password', 'Passwords do not match!')
+            return self.form_invalid(form)
+        else:
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(self.request, user)
+            return super().form_valid(form)

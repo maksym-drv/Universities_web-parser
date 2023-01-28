@@ -1,6 +1,7 @@
 from json import load
 from django.db import models
 from django.conf import settings
+from accounts.models import CustomUser
 
 class Template(models.Model):
 
@@ -18,6 +19,7 @@ class Template(models.Model):
     program         = models.CharField('Program', max_length=200, null=True, blank=True)
     form            = models.CharField('Type', max_length=200, null=True, choices=options['forms'], blank=True)
     course          = models.CharField('Course', max_length=200, null=True, choices=options['courses'], blank=True)
+    user            = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
