@@ -33,7 +33,7 @@
             <li>Speciality: <b>{{ template.get_speciality_display }}</b></li>
 
             {% if template.institution %}
-            <li>Institution: <b>{{ template.get_institution_display }}</b></li>
+            <li>Institution: <b>{{ template.institution }}</b></li>
             {% endif %}
 
             {% if template.region %}
@@ -41,7 +41,7 @@
             {% endif %}
 
             {% if template.program %}
-            <li>Program: <b>{{ template.get_program_display }}</b></li>
+            <li>Program: <b>{{ template.program }}</b></li>
             {% endif %}
 
             {% if template.form %}
@@ -61,7 +61,7 @@
           <a href="{% url 'profile' %}" class="button"><i class="fa-solid fa-download"></i> Download</a>
         </div>
         <div class="templatesItem__button">
-          <a href="{% url 'profile' %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+          <a href="{% url 'edit_template' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
         </div>
       </div>
     </div><!-- /.templatesItem -->

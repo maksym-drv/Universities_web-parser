@@ -15,7 +15,7 @@ class Profile(LoginRequiredMixin, SuccessMessageMixin, FormView):
     success_url = reverse_lazy('profile')
     success_message = 'Data was successfully changed'
 
-    def form_valid(self, form):
+    def form_valid(self, form: UserProfileForm):
         form.save()
         #messages.success(self.request, 'Data was successfully changed')
         return super().form_valid(form)
@@ -53,7 +53,7 @@ class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     success_url = reverse_lazy('profile')
     success_message = 'Password changed successfully'
 
-    def form_valid(self, form):
+    def form_valid(self, form: ChangePasswordForm):
         
         user = self.request.user
         current_password = form.cleaned_data.get('current_password')

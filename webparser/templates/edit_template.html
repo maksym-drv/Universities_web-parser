@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container">
+  <div class="form__account">
+    <h3>Edit a template</h3>
+    <form method="post" enctype="multipart/form-data">
+
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <input type="submit" value="Save changes">
+      <a href="{% url 'my_templates' %}" class="button">Return</a>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %}
