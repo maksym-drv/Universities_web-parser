@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+  <title>Universities Web-parser</title>
+
+  <link rel="stylesheet" href="{% static 'css/reboot.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+
+<body id="body">
+  <!-- .wrapper -->
+  <div class="wrapper">
+
+    <!-- .header -->
+    <header class="header">
+      <div class="header__inner">
+
+        {% if user.is_authenticated %}
+
+        <!-- .header__box -->
+        <div class="header__box">
+
+            <!-- .nav -->
+            <nav id="nav" class="nav">
+              <ul>
+                <li><a href="#" class="nav__link">My templates</a></li>
+                <li><a href="#" class="nav__link">Groups</a></li>
+              </ul>
+            </nav><!-- /.nav -->
+
+        </div><!-- /.header__box -->
+
+        <!-- .header__box -->
+        <div class="header__box">
+
+          <!-- .ding -->
+          <div id="ding" class="ding dropdown">
+
+            <button class="ding__toogle dropdown-toggle" type="button" id="dropdownMenu__ding" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <img class="ding__icon" src="{% static 'images/bell.svg' %}" alt="Notifications">
+              {% if not count == 0 %}
+                <span class="ding__info">{{ count }}</span>
+              {% endif %}
+            </button>
+
+            <!-- .ding__box -->
+            <div class="dropdown-menu ding__box" aria-labelledby="dropdownMenu__ding">
+              <span class="ding__arrow"></span>
+
+              <!-- .ding__content -->
+              <div class="ding__content">
+
+                <!-- .dingList -->
+                <div class="dingList">
+                  <div class="dingList__title">Today</div>
+
+                  {% for notification in today %}
+
+                  <div class="dingList__item">
+                    <img class="dingList__item__icon" src="{% static 'images/message.svg' %}" alt="Message">
+                    <p class="dingList__item__desc">
+                      <a href="{% url 'topic' %}?topic={{ notification.id }}#reply_{{ notification.reply }}">You were answered on the <b>{{ notification.name }}</b> at <span>{{ notification.time|date:'Y-m-d H:i' }}</span></a>
+                    </p>
+                  </div>
+
+                  {% endfor %}
+
+                </div>
+                <!-- /.dingList -->
+
+              </div><!-- /.ding__content -->
+
+            </div><!-- /.ding__box -->
+
+          </div><!-- /.ding -->
+          
+          <a href="{% url 'logout' %}" class="nav__link hidden__mobile">Logout</a>
+
+          <!-- .nav__open -->
+          <button id="nav__open" type="button" class="navToggle">
+            <span class="navToggle__inner">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          </button><!-- /.nav__open -->
+
+        </div><!-- /.header__box -->
+        
+        {% endif %}
+
+      </div>
+    </header><!-- .header -->
+
+    <!-- .main -->
+    <div class="main">
+      {% block main %}
+      {% endblock main %}
+    </div><!-- /.main -->
+
+  </div>
+  <!-- .wrapper -->
+
+  <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>

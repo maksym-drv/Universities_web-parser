@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+{% if messages %}
+  {% for message in messages %}
+    <script>alert("{{ message }}")</script>
+  {% endfor %}
+{% endif %}
+
+<div class="container">
+  <h3>Your profile:</h3>
+  <form method="post">
+
+    {% csrf_token %}
+    {{ form }}
+
+    <input type="submit" value="Save">
+  </form>
+</div>
+
+{% endblock %}
