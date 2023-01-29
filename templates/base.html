@@ -39,6 +39,7 @@
                 <li><a href="{% url 'my_templates' %}" class="nav__link">My templates</a></li>
                 <li><a href="{% url 'new_template' %}" class="nav__link">New template</a></li>
                 <li><a href="{% url 'profile' %}" class="button">My Profile</a></li>
+                <li class="hidden__desktop"><a href="{% url 'logout' %}" class="nav__link">Logout</a></li>
               </ul>
             </nav><!-- /.nav -->
 
@@ -48,6 +49,15 @@
         <div class="header__box">
           
           <a href="{% url 'logout' %}" class="nav__link hidden__mobile">Logout</a>
+
+          <!-- .nav__open -->
+          <button id="nav__open" type="button" class="navToggle">
+            <span class="navToggle__inner">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          </button><!-- /.nav__open -->
 
         </div><!-- /.header__box -->
         
