@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container">
+  <div class="form__box">
+    <h3>Delete the template</h3>
+    <form method="post" enctype="multipart/form-data">
+
+      <p>Are you sure you want to delete template "{{ object }}"?</p>
+
+      {% csrf_token %}
+      {{ form }}
+
+      <div class="form__buttons">
+        <input type="submit" value="Delete">
+        <a href="{% url 'edit_template' object.id %}" class="button">Cancel</a>
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %}

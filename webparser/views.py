@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, DeleteView
 from .models import Template, Report
 from .forms import NewTemplateForm, ReportForm
 
@@ -43,6 +43,13 @@ class EditTemplateView(LoginRequiredMixin, FormView):
         kwargs = super(EditTemplateView, self).get_form_kwargs()
         kwargs['instance'] = Template.objects.get(pk=self.kwargs['pk'])
         return kwargs
+
+
+class DeleteTemplateView(LoginRequiredMixin, DeleteView):
+
+    model = Template
+    success_url = reverse_lazy('my_templates')
+    template_name = 'delete_template.html'
 
 
 class ReportView(LoginRequiredMixin, FormView):

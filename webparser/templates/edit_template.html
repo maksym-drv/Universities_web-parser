@@ -4,16 +4,16 @@
 
 <div class="container">
   <div class="form__box">
-    <h3>Edit a template</h3>
+    <h3>Edit the template</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
       {{ form.as_p }}
 
       <div class="form__buttons">
-        <input type="submit" value="Download">
+        <input type="submit" value="Save changes">
         <a href="{% url 'my_templates' %}" class="button">Return</a>
-        <a href="{% url 'my_templates' %}" class="button button__red">Delete</a>
+        <a href="{% url 'delete_template' form.instance.pk %}" class="button button__red">Delete</a>
       </div>
       
     </form>
