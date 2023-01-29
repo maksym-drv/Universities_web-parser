@@ -2,23 +2,18 @@
 
 {% block main %}
 
-{% if messages %}
-  {% for message in messages %}
-    <script>alert("{{ message }}")</script>
-  {% endfor %}
-{% endif %}
-
 <div class="container">
   <div class="form__box">
-    <h3>Your profile:</h3>
+    <h3>Download the report</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
       {{ form.as_p }}
 
+      
       <div class="form__buttons">
-        <input type="submit" value="Save">
-        <a href="{% url 'changepassword' %}" class="button">Change password</a>
+        <input type="submit" value="Download">
+        <a href="{% url 'my_templates' %}" class="button">Return</a>
       </div>
       
     </form>

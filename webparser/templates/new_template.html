@@ -3,14 +3,16 @@
 {% block main %}
 
 <div class="container">
-  <div class="form__account">
+  <div class="form__box">
     <h3>Create a new template</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
       {{ form.as_p }}
-
-      <input type="submit" value="Create">
+      
+      <div class="form__buttons">
+        <input type="submit" value="Create">
+      </div>
       
     </form>
   </div>

@@ -626,6 +626,14 @@ p {
   color: #05A4FD;
   text-decoration: none;
 }
+  
+  .button__red:hover,
+  .button__red:focus {
+    background: none;
+    border-color: #fd0505;
+    color: #fd0505;
+    text-decoration: none;
+  }
 
 .button:focus {
   outline: none
@@ -702,15 +710,18 @@ p {
 }
 
 .form__buttons {
-  padding-top: 16px;
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
 }
 
-.form__buttons .button {
-  width: 100%;
-  text-align: center;
-  padding-top: 13px;
-  padding-bottom: 13px;
-}
+  .form__buttons > * {
+    margin-top: 20px;
+    margin-right: 1.5em;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
 
 .label {
   display: block;
@@ -741,8 +752,4 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: white;
   color: black;
-}
-
-.form__account a {
-  margin: 0px 20px;
 }

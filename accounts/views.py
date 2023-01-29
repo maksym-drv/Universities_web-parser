@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 
 
-class Profile(LoginRequiredMixin, SuccessMessageMixin, FormView):
+class ProfileView(LoginRequiredMixin, SuccessMessageMixin, FormView):
 
     form_class = UserProfileForm
     template_name = 'profile.html'
@@ -21,12 +21,12 @@ class Profile(LoginRequiredMixin, SuccessMessageMixin, FormView):
         return super().form_valid(form)
 
     def get_form_kwargs(self):
-        kwargs = super(Profile, self).get_form_kwargs()
+        kwargs = super(ProfileView, self).get_form_kwargs()
         kwargs['instance'] = self.request.user
         return kwargs
 
 
-class Login(LoginView):
+class LoginView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -34,11 +34,11 @@ class Login(LoginView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class SignUp(CreateView):
+class SignUpView(CreateView):
 
     form_class = SignUpForm
     template_name = "signup.html"
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('new_template')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
