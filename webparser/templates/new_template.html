@@ -9,11 +9,67 @@
 
       {% csrf_token %}
       {{ form.as_p }}
-      
+
+      <p>
+        <label>Region:</label>
+      </p>
+
+      {% for region_id, region in regions.items %}
+
+        <details class="form__regions">
+          <summary>
+            <label for="option"> {{ region.name }} </label>
+            <input type="checkbox" name="option" onclick="checkOption('{{ region_id }}')" id="{{ region_id }}"> 
+          </summary>
+          <ol>
+
+            {% for uni in region.unis %}
+
+              <li>
+                <label><input type="checkbox" name="university" value="{{ uni.university_id }}" data-option="{{ region_id }}" onclick="checkSuboptions('{{ region_id }}')"> {{ uni.university_name }}</label>
+              </li>
+
+            {% endfor %}
+
+          </ol>
+        </details>
+
+      {% endfor %}
+
+      <style>
+        .form__regions input[type=checkbox], input[type=radio] {
+          box-sizing: border-box;
+          height: 15px;
+          width: 15px;
+        }
+      </style>
+
+      <script>
+
+        function checkSuboptions(option) {
+
+          var checkedCount = document.querySelectorAll(`[data-option="${option}"]:checked`).length,
+            checkboxes = document.querySelectorAll(`[data-option="${option}"]`),
+            checkall = document.getElementById(option);
+
+          checkall.checked = checkedCount > 0;
+          checkall.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+        }
+
+        function checkOption(option) {
+          var checkboxes = document.querySelectorAll(`[data-option="${option}"]`),
+            checkall = document.getElementById(option);
+          for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = checkall.checked;
+          }
+        }
+
+      </script>
+
       <div class="form__buttons">
         <input type="submit" value="Create">
       </div>
-      
+
     </form>
   </div>
 </div>

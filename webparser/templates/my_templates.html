@@ -28,16 +28,28 @@
 
         <div class="templatesItem__desc__text">
           <ul>
-            <li>Qualification: <b>{{ template.get_qualification_display }}</b></li>
-            <li>Education base: <b>{{ template.get_education_base_display }}</b></li>
-            <li>Speciality: <b>{{ template.get_speciality_display }}</b></li>
+            <li>Qualification: <b>{{ template.qualification }}</b></li>
+            <li>Education base: <b>{{ template.education_base }}</b></li>
+            <li>Speciality:
+                <ol>
+                  {% for speciality in template.speciality.all %}
+                    <li><b>{{ speciality.name }}</b></li></li>
+                  {% endfor %}
+                </ol>
+            </li>
 
             {% if template.institution %}
-            <li>Institution: <b>{{ template.institution }}</b></li>
+              <li>Institution: <b>{{ template.institution }}</b></li>
             {% endif %}
 
             {% if template.region %}
-            <li>Region: <b>{{ template.get_region_display }}</b></li>
+            <li>Region: 
+              <ol>
+                {% for region in template.region.all %}
+                  <li><b>{{ region.name }}</b></li>
+                {% endfor %}
+              </ol>
+            </li>
             {% endif %}
 
             {% if template.program %}
@@ -58,7 +70,7 @@
 
       <div class="templatesItem__buttons">
         <div class="templatesItem__button">
-          <a href="{% url 'report' template.id %}" class="button"><i class="fa-solid fa-download"></i> Download</a>
+          <a href="{% url 'report' template.id %}" class="button"><i class="fa-solid fa-database"></i> Data</a>
         </div>
         <div class="templatesItem__button">
           <a href="{% url 'edit_template' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>

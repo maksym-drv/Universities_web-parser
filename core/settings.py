@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'webparser',
+    'options',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +143,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TARGET_URL = 'https://vstup.edbo.gov.ua/offers/'
 
+REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
+SPECIALITIES_URL = 'https://registry.edbo.gov.ua/files/specialities.xlsx'
+UNIVERSITIES_URL = 'https://registry.edbo.gov.ua/api/universities/'
+
 TARGET_OPTIONS = {
     'courses': 'offers-search-course', 
     'education_bases': 'offers-search-education-base',
@@ -149,4 +156,26 @@ TARGET_OPTIONS = {
     'specialities': 'offers-search-speciality'
 }
 
+PARSER_OPTIONS = [
+    'qualification',
+    'education_base',
+    'speciality',
+    'region',
+    'education_form',
+    'course',
+    'university',
+    'study_program',
+]
+
 OPTIONS_ROOT = os.path.join(BASE_DIR, 'webparser/options/')
+
+if os.environ.get('FIREFOX_VER'):
+
+    options = webdriver.FirefoxOptions()
+    options.binary_location = r'/usr/bin/firefox'
+    options.add_argument("--headless")
+
+    WEB_DRIVER = webdriver.Firefox(
+        executable_path = GeckoDriverManager().install(), 
+        options         = options,
+    )

@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # python manage.py flush --no-input
-python manage.py collectoptions
 python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --no-input
+python manage.py collectdata
 
 exec "$@"

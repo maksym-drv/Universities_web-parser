@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import MyTemplatesView, NewTemplateView, EditTemplateView, ReportView, DeleteTemplateView
+from .views import MyTemplatesView, NewTemplateView, EditTemplateView, \
+                ReportView, DeleteTemplateView, DownloadReportView
 
 
 urlpatterns = [
@@ -8,4 +9,5 @@ urlpatterns = [
     path('edit_template/<int:pk>/', EditTemplateView.as_view(), name='edit_template'),
     path('report/<int:pk>/', ReportView.as_view(), name='report'),
     path('delete_template/<int:pk>/', DeleteTemplateView.as_view(), name='delete_template'),
+    path('download_report/<int:pk>/', DownloadReportView.as_view(), name='download_report'),
 ]
