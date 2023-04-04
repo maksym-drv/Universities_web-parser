@@ -4,10 +4,56 @@ from django.views.generic import ListView, FormView, DeleteView, TemplateView
 from .models import Template, Report
 from options.models import Region
 from .forms import NewTemplateForm, ReportForm
+from multiprocessing.dummy import Pool
 from .parsing import Parser
+from .scraping import Scraper
 from requests import get
 from django.conf import settings
 from options.models import University
+
+from json import dump
+from time import time
+
+
+class TemplateDataView(LoginRequiredMixin, TemplateView):
+
+    template_name = 'template_data.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        template = Template.objects.get(pk = self.kwargs.get('pk'))
+
+        unis = {}
+
+        start = time()
+        
+        parser = Scraper(
+            url = settings.TARGET_URL,
+            executable_path = settings.EXECUTABLE_PATH,
+            firefox_options = settings.FIREFOX_OPTIONS,
+            qualification = template.qualification.registry_id,
+            education_base = template.education_base.registry_id
+        )
+
+        specialities = [speciality.registry_id for 
+                        speciality in template.speciality.all()]
+
+        with Pool(len(specialities)) as p:
+            raw_pages = p.map(parser.get_raw_uni, specialities)
+
+        for raw_page in raw_pages:
+            
+            test = parser.get_uni_data(raw_page)
+
+            with open('data.json', 'w') as file:
+                dump(test, file, ensure_ascii=False)
+
+        end = time()
+
+        print(f'TIME ==> {end - start}')
+
+        return context
 
 
 class MyTemplatesView(LoginRequiredMixin, ListView):

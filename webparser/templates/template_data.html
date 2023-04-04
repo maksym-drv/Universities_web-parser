@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+<div class="container container__lg">
+
+  <h3>My templates</h3>
+
+  <!-- .templates -->
+  <div class="templates">
+
+    {% for template in object_list %}
+
+    <!-- .templatesItem -->
+    <div class="templatesItem">
+
+      <div class="templatesItem__desc">
+
+        <div class="templatesItem__desc__name">
+
+          <span class="templatesItem__icon">
+            <i class="fa-solid fa-file"></i>
+          </span>
+          <span>{{ template.name }}</span>
+        </div>
+
+        <div class="templatesItem__desc__text">
+          <ul>
+            <li>Qualification: <b>{{ template.qualification }}</b></li>
+            <li>Education base: <b>{{ template.education_base }}</b></li>
+            <li>Speciality:
+                <ol>
+                  {% for speciality in template.speciality.all %}
+                    <li><b>{{ speciality.name }}</b></li></li>
+                  {% endfor %}
+                </ol>
+            </li>
+
+            {% if template.institution %}
+              <li>Institution: <b>{{ template.institution }}</b></li>
+            {% endif %}
+
+            {% if template.region %}
+            <li>Region: 
+              <ol>
+                {% for region in template.region.all %}
+                  <li><b>{{ region.name }}</b></li>
+                {% endfor %}
+              </ol>
+            </li>
+            {% endif %}
+
+            {% if template.program %}
+            <li>Program: <b>{{ template.program }}</b></li>
+            {% endif %}
+
+            {% if template.form %}
+            <li>Form: <b>{{ template.get_form_display }}</b></li>
+            {% endif %}
+
+            {% if template.course %}
+            <li>Course: <b>{{ template.get_course_display }}</b></li>
+            {% endif %}
+
+          </ul>
+        </div>
+      </div>
+
+      <div class="templatesItem__buttons">
+        <div class="templatesItem__button">
+          <a href="{% url 'report' template.id %}" class="button"><i class="fa-solid fa-database"></i> Data</a>
+        </div>
+        <div class="templatesItem__button">
+          <a href="{% url 'edit_template' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+        </div>
+      </div>
+    </div><!-- /.templatesItem -->
+
+    {% endfor %}
+
+  </div><!-- /.templates -->
+</div>
+
+{% endblock %}

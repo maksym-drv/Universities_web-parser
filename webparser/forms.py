@@ -7,10 +7,6 @@ class NewTemplateForm(forms.ModelForm):
 
     year_choices = [(year, year) for year in range(2018, datetime.now().year + 1)]
     year = forms.ChoiceField(choices=year_choices)
-    speciality = forms.ModelMultipleChoiceField(
-        queryset=Speciality.objects.all(),
-        widget=forms.CheckboxSelectMultiple
-    )
 
     class Meta:
         model = Template
@@ -19,6 +15,7 @@ class NewTemplateForm(forms.ModelForm):
             'year',
             'qualification',
             'education_base',
+            'speciality'
         )
 
 

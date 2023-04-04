@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 from webdriver_manager.firefox import GeckoDriverManager
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -147,35 +147,34 @@ REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
 SPECIALITIES_URL = 'https://registry.edbo.gov.ua/files/specialities.xlsx'
 UNIVERSITIES_URL = 'https://registry.edbo.gov.ua/api/universities/'
 
-TARGET_OPTIONS = {
-    'courses': 'offers-search-course', 
-    'education_bases': 'offers-search-education-base',
-    'forms': 'offers-search-education-form',
-    'qualifications': 'offers-search-qualification',
-    'regions': 'offers-search-region',
-    'specialities': 'offers-search-speciality'
-}
-
-PARSER_OPTIONS = [
-    'qualification',
-    'education_base',
-    'speciality',
-    'region',
-    'education_form',
-    'course',
-    'university',
-    'study_program',
-]
+# TARGET_OPTIONS = {
+#     'courses': 'offers-search-course', 
+#     'education_bases': 'offers-search-education-base',
+#     'forms': 'offers-search-education-form',
+#     'qualifications': 'offers-search-qualification',
+#     'regions': 'offers-search-region',
+#     'specialities': 'offers-search-speciality'
+# }
+# 
+# PARSER_OPTIONS = [
+#     'qualification',
+#     'education_base',
+#     'speciality',
+#     'region',
+#     'education_form',
+#     'course',
+#     'university',
+#     'study_program',
+# ]
 
 OPTIONS_ROOT = os.path.join(BASE_DIR, 'webparser/options/')
 
-if os.environ.get('FIREFOX_VER'):
+if os.environ.get('AM_I_IN_DOCKER'):
 
-    options = webdriver.FirefoxOptions()
-    options.binary_location = r'/usr/bin/firefox'
-    options.add_argument("--headless")
+    FIREFOX_OPTIONS = FirefoxOptions()
+    FIREFOX_OPTIONS.add_argument('--headless')
+    FIREFOX_OPTIONS.add_argument('--mute-audio')
+    FIREFOX_OPTIONS.add_argument('--no-sandbox')
+    FIREFOX_OPTIONS.add_argument('--disable-dev-shm-usage')
 
-    WEB_DRIVER = webdriver.Firefox(
-        executable_path = GeckoDriverManager().install(), 
-        options         = options,
-    )
+    EXECUTABLE_PATH = GeckoDriverManager().install()
