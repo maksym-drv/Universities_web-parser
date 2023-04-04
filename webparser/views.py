@@ -24,8 +24,6 @@ class TemplateDataView(LoginRequiredMixin, TemplateView):
         
         template = Template.objects.get(pk = self.kwargs.get('pk'))
 
-        unis = {}
-
         start = time()
         
         parser = Scraper(
@@ -40,14 +38,10 @@ class TemplateDataView(LoginRequiredMixin, TemplateView):
                         speciality in template.speciality.all()]
 
         with Pool(len(specialities)) as p:
-            raw_pages = p.map(parser.get_raw_uni, specialities)
+            unis = p.map(parser.get_uni_data, specialities)
 
-        for raw_page in raw_pages:
-            
-            test = parser.get_uni_data(raw_page)
-
-            with open('data.json', 'w') as file:
-                dump(test, file, ensure_ascii=False)
+        with open('data.json', 'w') as file:
+            dump(unis, file, ensure_ascii=False)
 
         end = time()
 

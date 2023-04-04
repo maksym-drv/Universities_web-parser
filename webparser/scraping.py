@@ -3,7 +3,9 @@ from .parsing import Parser
 
 class Scraper(Parser):
 
-    def get_uni_data(self, raw_data: str) -> str:
+    def get_uni_data(self, speciality: str) -> str:
+
+        raw_data = self.get_raw_uni(speciality)
 
         def get_offer_data(soup: BeautifulSoup, class_name: str):
             offer = soup.find('dl', {'class': class_name})
@@ -60,4 +62,3 @@ class Scraper(Parser):
                 if oc: data[uni_id]['offer']['oc'] = oc
                 
         return data
-        #return driver.page_source
