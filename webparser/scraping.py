@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from .parsing import Parser
+from parsing import Parser
 
 class Scraper(Parser):
 
