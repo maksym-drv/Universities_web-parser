@@ -14,7 +14,6 @@ from options.models import University
 from json import dump
 from time import time
 
-
 class TemplateDataView(LoginRequiredMixin, TemplateView):
 
     template_name = 'template_data.html'
@@ -38,7 +37,24 @@ class TemplateDataView(LoginRequiredMixin, TemplateView):
                         speciality in template.speciality.all()]
 
         with Pool(len(specialities)) as p:
-            unis = p.map(parser.get_uni_data, specialities)
+            spec_unis = p.map(parser.get_uni_data, specialities)
+
+        unis = []
+
+        for spec_uni in spec_unis:
+            for uni in spec_uni:
+                uni_index = next((index for (index, _uni) in enumerate(unis) 
+                                if _uni['id'] == uni['id']), None)
+                
+                if isinstance(uni_index, int):
+                    unis[uni_index]['offers'].append(uni['offer'])
+                else:
+                    _uni = {}
+                    _uni['id'] = uni['id']
+                    _uni['name'] = uni['name']
+                    _uni['offers'] = []
+                    _uni['offers'].append(uni['offer'])
+                    unis.append(_uni)
 
         with open('data.json', 'w') as file:
             dump(unis, file, ensure_ascii=False)

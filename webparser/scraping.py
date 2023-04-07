@@ -13,52 +13,55 @@ class Scraper(Parser):
             return offer.find('dd').text
         
         def get_stat_data(soup: BeautifulSoup, class_name: str):
-            if not soup: return
+            if not soup: return 0
             stat = soup.find('div', {'class': class_name})
-            if not stat: return 
+            if not stat: return 0
             return stat.find('div', {'class': 'value'}).text
 
         soup = BeautifulSoup(raw_data, 'html.parser')
 
         unis_soup = soup.find('div', id='universities')
 
-        data = {}
+        data = []
 
         for uni in unis_soup.find_all('div', {'class': 'university'}):
 
             uni_id = f"{uni['data-university']}"
-            data[uni_id] = {}
-            data[uni_id]['name'] = \
+            _uni = {}
+            _uni['id'] = uni_id
+            _uni['name'] = \
                 uni.find('h5', {'class': 'text-primary text-uppercase'}).text
             
             for offer in uni.find_all('div', {'class': 'offer'}):
                 
-                data[uni_id]['offer'] = {}
+                _uni['offer'] = {}
 
                 offer_name = offer.find_all(
                     'dl', 
                     {'class': 'offer-university-specialities-name'}
                 )[1]
-                data[uni_id]['offer']['name'] = offer_name.find('dd').text
+                _uni['offer']['name'] = offer_name.find('dd').text
                 
                 form = get_offer_data(offer, 'row offer-education-form-name')
                 if form: 
-                    data[uni_id]['offer']['form'] = form
+                    _uni['offer']['form'] = form
                 
                 price = get_offer_data(offer, 'row offer-education-price')
                 if price: 
-                    data[uni_id]['offer']['price'] = price
+                    _uni['offer']['price'] = price
                 
                 statistics = offer.find('div', {'class': 'offer-requests-stats'})
 
                 applications = get_stat_data(statistics, 'stats-field-t')
                 if applications:
-                    data[uni_id]['offer']['applications'] = applications
+                    _uni['offer']['applications'] = applications
                 
                 ob = get_stat_data(statistics, 'stats-field-ob')
-                if ob: data[uni_id]['offer']['ob'] = ob
+                if ob: _uni['offer']['ob'] = ob
                 
                 oc = get_stat_data(statistics, 'stats-field-oc')
-                if oc: data[uni_id]['offer']['oc'] = oc
+                if oc: _uni['offer']['oc'] = oc
+
+            data.append(_uni)
                 
         return data
