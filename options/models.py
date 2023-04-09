@@ -9,7 +9,7 @@ class Region(models.Model):
 
 
 class Speciality(models.Model):
-    name = models.CharField('Name', max_length = 100, unique=True)
+    name = models.CharField('Name', max_length = 100)
     registry_id = models.CharField(max_length = 10, unique=True)
 
     def __str__(self) -> str:

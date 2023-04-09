@@ -495,8 +495,6 @@ p {
   display: none
 }
 
-.backLink img {}
-
 @media (min-width:1600px) {
   .backLink {
     display: block;
@@ -509,10 +507,21 @@ p {
   position: relative
 }
 
+.templates--titles h3 {
+  margin-top: 30px;
+  margin-left: 20px;
+}
+
 @media (min-width: 576px) {
   .templates {
     margin: 0
   }
+}
+
+.regionsItem h3 {
+  text-align: center;
+  margin-bottom: 0px;
+  margin-top: 40px;
 }
 
 /* .templatesItem */
@@ -554,6 +563,48 @@ p {
 
 .templatesItem__desc__text {
   color: #494949
+}
+
+.templatesItem__desc--table {
+  width: 100%;
+}
+
+  .templatesItem__desc--table .templatesItem__desc__text {
+    overflow-x: auto;
+  }
+
+  .templatesItem__desc--table table {
+    border: 2px solid black;
+    width: 100%;
+  }
+
+  .templatesItem__desc--table th, td {
+    border: 1px solid #ddd;
+    padding: 15px;
+  }
+
+  /* .templatesItem__desc--table tr:nth-child(even){background-color: #f2f2f2} */
+
+.templates__subtitles {
+  margin: 15px;
+  border-bottom: 1px solid black;
+}
+
+.subtitles__options ol {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.subtitles__option {
+    display: inline-block;
+}
+
+.subtitles__option a::after {
+    display: inline-block;
+    color: #000;
+    font-size: 80%;
+    font-weight: bold;
+    padding: 0 3px;
 }
 
 .templatesItem__buttons {

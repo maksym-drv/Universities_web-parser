@@ -1,7 +1,14 @@
 from bs4 import BeautifulSoup
 from .parsing import Parser
+from selenium.webdriver import FirefoxOptions
 
 class Scraper(Parser):
+
+    def __init__(self, url: str, executable_path: str, firefox_options: FirefoxOptions, 
+                qualification: str, education_base: str, unis: list) -> None:
+        super().__init__(url, executable_path, firefox_options, 
+                        qualification, education_base)
+        self.unis = unis
 
     def get_uni_data(self, speciality: str) -> str:
 
@@ -27,40 +34,51 @@ class Scraper(Parser):
         for uni in unis_soup.find_all('div', {'class': 'university'}):
 
             uni_id = f"{uni['data-university']}"
+            if not uni_id in self.unis:
+                continue
+
             _uni = {}
             _uni['id'] = uni_id
             _uni['name'] = \
                 uni.find('h5', {'class': 'text-primary text-uppercase'}).text
+            _uni['offers'] = []
             
             for offer in uni.find_all('div', {'class': 'offer'}):
                 
-                _uni['offer'] = {}
+                _offer = {}
 
                 offer_name = offer.find_all(
                     'dl', 
                     {'class': 'offer-university-specialities-name'}
-                )[1]
-                _uni['offer']['name'] = offer_name.find('dd').text
+                )
+                
+                _offer['id'] = offer_name[0].find('span', 
+                                        {'class': 'badge badge-primary'}
+                                    ).text
+
+                _offer['name'] = offer_name[1].find('dd').text
                 
                 form = get_offer_data(offer, 'row offer-education-form-name')
                 if form: 
-                    _uni['offer']['form'] = form
+                    _offer['form'] = form
                 
                 price = get_offer_data(offer, 'row offer-education-price')
                 if price: 
-                    _uni['offer']['price'] = price
+                    _offer['price'] = price
                 
                 statistics = offer.find('div', {'class': 'offer-requests-stats'})
 
                 applications = get_stat_data(statistics, 'stats-field-t')
                 if applications:
-                    _uni['offer']['applications'] = applications
+                    _offer['applications'] = applications
                 
                 ob = get_stat_data(statistics, 'stats-field-ob')
-                if ob: _uni['offer']['ob'] = ob
+                if ob: _offer['ob'] = ob
                 
                 oc = get_stat_data(statistics, 'stats-field-oc')
-                if oc: _uni['offer']['oc'] = oc
+                if oc: _offer['oc'] = oc
+
+                _uni['offers'].append(_offer)
 
             data.append(_uni)
                 

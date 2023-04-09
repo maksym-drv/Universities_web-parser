@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 from options.models import Region, Speciality
+from urllib.request import urlopen
 from urllib.error import URLError
 from django.conf import settings
+from bs4 import BeautifulSoup
 import pandas as pd
 
 class Command(BaseCommand):
@@ -11,12 +13,12 @@ class Command(BaseCommand):
 
         region_id = 'Код регіону'
         region_name = 'Назва регіону'
-        speciality_id = 'Код спеціальності'
-        speciality_name = 'Назва спеціальності'
+
+        speciality_id = 'offers-search-speciality'
         
         try:
             regions = pd.read_excel(settings.REGIONS_URL)
-            specialities = pd.read_excel(settings.SPECIALITIES_URL)
+            file = urlopen(settings.TARGET_URL)
         except URLError:
             raise CommandError('Cannot connect to the server.')
         
@@ -28,11 +30,21 @@ class Command(BaseCommand):
             )
             region.save()
 
-        for index, speciality in enumerate(specialities[speciality_id]):
+        soup = BeautifulSoup(file.read(), 'html.parser')
+        select = soup.find(
+            "select", 
+            { "id": speciality_id }
+        )
+
+        for option in select.find_all('option'):
+
+            option: BeautifulSoup
+            speciality_id = option.get('value')
+            if not speciality_id: continue
 
             speciality = Speciality(
-                name = specialities[speciality_name][index],
-                registry_id = specialities[speciality_id][index]
+                name = option.text,
+                registry_id = speciality_id
             )
             speciality.save()
 

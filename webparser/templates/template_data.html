@@ -6,77 +6,74 @@
 
 <div class="container container__lg">
 
-  <h3>My templates</h3>
-
   <!-- .templates -->
   <div class="templates">
 
-    {% for template in object_list %}
+    <div class="templates__subtitles">
+      <nav class="subtitles__options">
+        <ol>
+          <li class="subtitles__option" data-section="0"><a href="#">All Regions</a></li>
+          {% for region in regions %}
+          <li class="subtitles__option" data-section="{{ region.id }}">/ <a href="#">{{ region.name }}</a></li>
+          {% endfor %}
+          <li class="subtitles__option" data-section="short">/ <a href="#">Short data</a></li>
+        </ol>
+      </nav>
+    </div>
 
-    <!-- .templatesItem -->
-    <div class="templatesItem">
+    {% for region in regions %}
 
-      <div class="templatesItem__desc">
+    <div class="regionsItem" id="{{ region.id }}">
 
-        <div class="templatesItem__desc__name">
+      <h3><i class="fa-solid fa-mountain-sun"></i> {{ region.name }}</h3>
 
-          <span class="templatesItem__icon">
-            <i class="fa-solid fa-file"></i>
-          </span>
-          <span>{{ template.name }}</span>
+      {% for uni in region.unis %}
+
+      <!-- .templatesItem -->
+      <div class="templatesItem">
+
+        <div class="templatesItem__desc templatesItem__desc--table">
+
+          <div class="templatesItem__desc__name">
+            <span class="templatesItem__icon">
+              <i class="fa-solid fa-building-columns"></i>
+            </span>
+            <span>{{ uni.name }}</span>
+          </div>
+
+          <div class="templatesItem__desc__text">
+
+            <table>
+              <col span="1" style="width: 35%;">
+              <tr>
+                <th>Name</th>
+                <th>Speciality</th>
+                <th>Form</th>
+                <th>Applications</th>
+                <th>Enrolled (Budget)</th>
+                <th>Enrolled (Contract)</th>
+                <th>Price</th>
+              </tr>
+              {% for offer in uni.offers %}
+              <tr>
+                <td>{{ offer.name }}</td>
+                <td>{{ offer.id }}</td>
+                <td>{{ offer.form }}</td>
+                <td>{{ offer.applications }}</td>
+                <td>{{ offer.ob }}</td>
+                <td>{{ offer.oc }}</td>
+                <td>{{ offer.price }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
         </div>
 
-        <div class="templatesItem__desc__text">
-          <ul>
-            <li>Qualification: <b>{{ template.qualification }}</b></li>
-            <li>Education base: <b>{{ template.education_base }}</b></li>
-            <li>Speciality:
-                <ol>
-                  {% for speciality in template.speciality.all %}
-                    <li><b>{{ speciality.name }}</b></li></li>
-                  {% endfor %}
-                </ol>
-            </li>
+      </div><!-- /.templatesItem -->
 
-            {% if template.institution %}
-              <li>Institution: <b>{{ template.institution }}</b></li>
-            {% endif %}
+      {% endfor %}
 
-            {% if template.region %}
-            <li>Region: 
-              <ol>
-                {% for region in template.region.all %}
-                  <li><b>{{ region.name }}</b></li>
-                {% endfor %}
-              </ol>
-            </li>
-            {% endif %}
-
-            {% if template.program %}
-            <li>Program: <b>{{ template.program }}</b></li>
-            {% endif %}
-
-            {% if template.form %}
-            <li>Form: <b>{{ template.get_form_display }}</b></li>
-            {% endif %}
-
-            {% if template.course %}
-            <li>Course: <b>{{ template.get_course_display }}</b></li>
-            {% endif %}
-
-          </ul>
-        </div>
-      </div>
-
-      <div class="templatesItem__buttons">
-        <div class="templatesItem__button">
-          <a href="{% url 'report' template.id %}" class="button"><i class="fa-solid fa-database"></i> Data</a>
-        </div>
-        <div class="templatesItem__button">
-          <a href="{% url 'edit_template' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
-        </div>
-      </div>
-    </div><!-- /.templatesItem -->
+    </div>
 
     {% endfor %}
 

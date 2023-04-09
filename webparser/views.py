@@ -26,6 +26,7 @@ class TemplateDataView(LoginRequiredMixin, TemplateView):
         start = time()
         
         parser = Scraper(
+            unis = list(template.university.values_list('registry_id', flat=True)),
             url = settings.TARGET_URL,
             executable_path = settings.EXECUTABLE_PATH,
             firefox_options = settings.FIREFOX_OPTIONS,
@@ -47,22 +48,45 @@ class TemplateDataView(LoginRequiredMixin, TemplateView):
                                 if _uni['id'] == uni['id']), None)
                 
                 if isinstance(uni_index, int):
-                    unis[uni_index]['offers'].append(uni['offer'])
+                    unis[uni_index]['offers'] += uni['offers']
                 else:
                     _uni = {}
                     _uni['id'] = uni['id']
                     _uni['name'] = uni['name']
                     _uni['offers'] = []
-                    _uni['offers'].append(uni['offer'])
+                    _uni['offers'] += uni['offers']
                     unis.append(_uni)
 
+        response = get(settings.UNIVERSITIES_URL, 
+                       params=settings.DEFAULT_PARAMS)
+        all_unis: list = response.json()
+        
+        regions = []
+        for uni in unis:
+            
+            region_name = next((_uni['region_name_u'] for _uni in all_unis 
+                        if _uni['university_id'] == uni['id']), None)
+            
+            region_index = next((index for (index, _region) in enumerate(regions) 
+                    if _region['name'] == region_name), None)
+            
+            if isinstance(region_index, int):
+                regions[region_index]['unis'].append(uni)
+            else:
+                _region = {}
+                _region['id'] = Region.objects.get(name = region_name).registry_id
+                _region['name'] = region_name
+                _region['unis'] = []
+                _region['unis'].append(uni)
+                regions.append(_region)
+
+
         with open('data.json', 'w') as file:
-            dump(unis, file, ensure_ascii=False)
+            dump(regions, file, ensure_ascii=False)
 
-        end = time()
+        print(f'PARSING TIME ==> {time() - start}')
 
-        print(f'TIME ==> {end - start}')
-
+        context['regions'] = regions
         return context
 
 
@@ -98,12 +122,8 @@ class NewTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        params = {
-            'ut': 1,
-            'exp': 'json'
-        }
-
-        response = get(settings.UNIVERSITIES_URL, params=params)
+        response = get(settings.UNIVERSITIES_URL, 
+                       params=settings.DEFAULT_PARAMS)
         unis: list = response.json()
         data = {}
 

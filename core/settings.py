@@ -147,25 +147,10 @@ REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
 SPECIALITIES_URL = 'https://registry.edbo.gov.ua/files/specialities.xlsx'
 UNIVERSITIES_URL = 'https://registry.edbo.gov.ua/api/universities/'
 
-# TARGET_OPTIONS = {
-#     'courses': 'offers-search-course', 
-#     'education_bases': 'offers-search-education-base',
-#     'forms': 'offers-search-education-form',
-#     'qualifications': 'offers-search-qualification',
-#     'regions': 'offers-search-region',
-#     'specialities': 'offers-search-speciality'
-# }
-# 
-# PARSER_OPTIONS = [
-#     'qualification',
-#     'education_base',
-#     'speciality',
-#     'region',
-#     'education_form',
-#     'course',
-#     'university',
-#     'study_program',
-# ]
+DEFAULT_PARAMS = {
+    'ut': 1,
+    'exp': 'json'
+}
 
 OPTIONS_ROOT = os.path.join(BASE_DIR, 'webparser/options/')
 

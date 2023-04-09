@@ -32,7 +32,6 @@ class Parser:
         self.options['speciality'] = speciality
 
         url = get(self.url, params=self.options).url
-        print(f'\n{url}\n')
         driver.get(url)
         
         wait = WebDriverWait(driver, 200)
