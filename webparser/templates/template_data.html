@@ -6,78 +6,55 @@
 
 <div class="container container__lg">
 
+  <div class="loader">
+    <div id="loader"></div>
+  </div>
+
+  <div class="templates__subtitles">
+    <nav class="subtitles__options">
+      <ol id="subtitles"></ol>
+    </nav>
+  </div>
+
   <!-- .templates -->
-  <div class="templates">
-
-    <div class="templates__subtitles">
-      <nav class="subtitles__options">
-        <ol>
-          <li class="subtitles__option" data-section="0"><a href="#">All Regions</a></li>
-          {% for region in regions %}
-          <li class="subtitles__option" data-section="{{ region.id }}">/ <a href="#">{{ region.name }}</a></li>
-          {% endfor %}
-          <li class="subtitles__option" data-section="short">/ <a href="#">Short data</a></li>
-        </ol>
-      </nav>
-    </div>
-
-    {% for region in regions %}
-
-    <div class="regionsItem" id="{{ region.id }}">
-
-      <h3><i class="fa-solid fa-mountain-sun"></i> {{ region.name }}</h3>
-
-      {% for uni in region.unis %}
-
-      <!-- .templatesItem -->
-      <div class="templatesItem">
-
-        <div class="templatesItem__desc templatesItem__desc--table">
-
-          <div class="templatesItem__desc__name">
-            <span class="templatesItem__icon">
-              <i class="fa-solid fa-building-columns"></i>
-            </span>
-            <span>{{ uni.name }}</span>
-          </div>
-
-          <div class="templatesItem__desc__text">
-
-            <table>
-              <col span="1" style="width: 35%;">
-              <tr>
-                <th>Name</th>
-                <th>Speciality</th>
-                <th>Form</th>
-                <th>Applications</th>
-                <th>Enrolled (Budget)</th>
-                <th>Enrolled (Contract)</th>
-                <th>Price</th>
-              </tr>
-              {% for offer in uni.offers %}
-              <tr>
-                <td>{{ offer.name }}</td>
-                <td>{{ offer.id }}</td>
-                <td>{{ offer.form }}</td>
-                <td>{{ offer.applications }}</td>
-                <td>{{ offer.ob }}</td>
-                <td>{{ offer.oc }}</td>
-                <td>{{ offer.price }}</td>
-              </tr>
-              {% endfor %}
-            </table>
-          </div>
-        </div>
-
-      </div><!-- /.templatesItem -->
-
-      {% endfor %}
-
-    </div>
-
-    {% endfor %}
-
-  </div><!-- /.templates -->
+  <div id="content" class="templates"></div>
+  <!-- /.templates -->
 </div>
+
+<script>
+
+  $(document).ready(function () {
+    $.ajax({
+      url: "{% url 'template_data' template_data %}",
+      type: 'get',
+      success: function (response) {
+
+        $.fn.loadSubtitles(response.regions);
+
+        var content = $("#content");
+
+        response.regions.forEach(region => {
+          var newRegion = $.fn.loadRegion(region);
+          content.append(newRegion);
+        });
+
+        $(".subtitles__option").click(function() {
+          const section_id = $(this).attr("data-section");
+          const sections = $(".regionsItem");
+
+          if (section_id == "0") {
+            sections.show();
+          } else {
+            sections.hide();
+            $("#" + section_id).show();
+          }
+        });
+        
+        $(".templates__subtitles").css("border-bottom", "1px solid black");
+        $("#loader").hide();
+      },
+    });
+  });
+</script>
 
 {% endblock %}

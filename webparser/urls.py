@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import MyTemplatesView, NewTemplateView, EditTemplateView, \
-                ReportView, DeleteTemplateView, DownloadReportView, TemplateDataView
+                ReportView, DeleteTemplateView, DownloadReportView, TemplateDataView, \
+                my_ajax_view
 
 
 urlpatterns = [
@@ -8,7 +9,9 @@ urlpatterns = [
     path('new_template/', NewTemplateView.as_view(), name='new_template'),
     path('edit_template/<int:pk>/', EditTemplateView.as_view(), name='edit_template'),
     path('report/<int:pk>/', ReportView.as_view(), name='report'),
-    path('template_data/<int:pk>/', TemplateDataView.as_view(), name='template_data'),
+    path('template/<int:pk>/', TemplateDataView.as_view(), name='template'),
     path('delete_template/<int:pk>/', DeleteTemplateView.as_view(), name='delete_template'),
     path('download_report/<int:pk>/', DownloadReportView.as_view(), name='download_report'),
+
+    path('template_data/<int:pk>/', my_ajax_view, name='template_data'),
 ]
