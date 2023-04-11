@@ -1,4 +1,6 @@
-from multiprocessing.dummy import Pool
+#from multiprocessing.dummy import Pool
+#from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 from .scraping import Scraper
 from celery import shared_task
 from django.conf import settings
@@ -22,8 +24,11 @@ def create_task(specialities: list,
 
     print('im in the task')
 
-    with Pool(len(specialities)) as p:
-        spec_unis = p.map(parser.get_uni_data, specialities)
+    # with Pool(len(specialities)) as p:
+    #     spec_unis = p.map(parser.get_uni_data, specialities)
+    
+    with ThreadPoolExecutor(max_workers=len(specialities)) as executor:
+        spec_unis = executor.map(parser.get_uni_data, specialities)
 
     unis = []
 
