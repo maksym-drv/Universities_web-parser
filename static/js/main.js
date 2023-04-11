@@ -3,8 +3,61 @@ $('.navToggle').click(function () {
   $('body').toggleClass('navActive');
 });
 
-// loading of templates data
-$.fn.loadSubtitles = function (regions) {
+// check task status
+function checkTaskStatus (url) {
+  $.ajax({
+    url: url,
+    type: 'get',
+    dataType: 'json',
+    success: function(data) {
+      if (data.status == 'SUCCESS') {
+        // the task is complete, handle the result
+        loadContent(data.result);
+      } else if (data.status == 'PENDING' || data.status == 'STARTED') {
+        // the task is still running, check again later
+        setTimeout(function() {
+          checkTaskStatus(url);
+        }, 1000);
+      } else {
+        console.log('The task failed.');
+      }
+    },
+    error: function() {
+      // handle the error
+      console.log('An error occurred while checking the task status.');
+    }
+  });
+}
+
+// load content
+function loadContent(regions) {
+
+  loadSubtitles(regions);
+  var content = $("#content");
+
+  regions.forEach(region => {
+    var newRegion = loadRegion(region);
+    content.append(newRegion);
+  });
+
+  $(".subtitles__option").click(function() {
+    const section_id = $(this).attr("data-section");
+    const sections = $(".regionsItem");
+
+    if (section_id == "0") {
+      sections.show();
+    } else {
+      sections.hide();
+      $("#" + section_id).show();
+    }
+  });
+  
+  $(".templates__subtitles").css("border-bottom", "1px solid black");
+  $("#loader").hide();
+};
+
+// loading of content data
+function loadSubtitles(regions) {
   var subtitles = $("#subtitles");
 
   var first_text = $("<a>", { href: "#", text: "All Regions" });
@@ -37,7 +90,7 @@ $.fn.loadSubtitles = function (regions) {
   subtitles.append(' / ', last_elem);
 };
 
-$.fn.loadRegion = function (region) {
+function loadRegion(region) {
 
   var newRegion = $("<div>", {
     class: "regionsItem",
@@ -48,14 +101,14 @@ $.fn.loadRegion = function (region) {
   newRegion.append(regionName);
 
   region.unis.forEach(uni => {
-    var newUni = $.fn.loadUni(uni);
+    var newUni = loadUni(uni);
     newRegion.append(newUni);
   });
 
   return newRegion;
 };
 
-$.fn.loadUni = function (uni) {
+function loadUni(uni) {
   var newUniItem = $("<div>", { class: "templatesItem" });
 
   var newUniObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" });
@@ -91,7 +144,7 @@ $.fn.loadUni = function (uni) {
   table.append(tableCol, firstRow)
   
   uni.offers.forEach(offer => {
-    var newOffer = $.fn.loadOffer(offer);
+    var newOffer = loadOffer(offer);
     table.append(newOffer);
   });
 
@@ -103,7 +156,7 @@ $.fn.loadUni = function (uni) {
 
 };
 
-$.fn.loadOffer = function (offer) {
+function loadOffer(offer) {
   var row = $("<tr>");
 
   var rowName         = $("<td>", {text: offer.name});

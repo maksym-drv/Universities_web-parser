@@ -26,6 +26,21 @@ services:
     depends_on:
       - db
 
+  redis:
+    image: redis:alpine
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A core worker -l INFO
+    entrypoint: [ "/parser/entrypoint.sh" ]
+    env_file:
+      - ./.dev.env
+      - ./.db.env
+    depends_on:
+      - redis
+
   nginx:
     container_name: parser_web
     build: ./nginx

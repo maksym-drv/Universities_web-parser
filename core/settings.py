@@ -90,7 +90,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-LOGIN_REDIRECT_URL = '/parser/my_templates'
+LOGIN_REDIRECT_URL = '/parser/templates'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -138,6 +138,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery
+CELERY_BROKER_URL       = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND   = os.environ.get('CELERY_RESULT_BACKEND')
 
 # Parser
 

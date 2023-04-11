@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+<div class="container container__lg">
+
+  <div class="loader">
+    <div id="loader"></div>
+  </div>
+
+  <div class="templates__subtitles">
+    <nav class="subtitles__options">
+      <ol id="subtitles"></ol>
+    </nav>
+  </div>
+
+  <!-- .templates -->
+  <div id="content" class="templates"></div>
+  <!-- /.templates -->
+</div>
+
+<script>
+  $(document).ready(function () {
+    checkTaskStatus(
+      "{% url 'check' task_id %}"
+    );
+  });
+</script>
+
+{% endblock %}
