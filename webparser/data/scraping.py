@@ -10,9 +10,9 @@ class Scraper(Parser):
                         qualification, education_base)
         self.unis = unis
 
-    def get_uni_data(self, speciality: str) -> str:
+    def get_uni_data(self, raw_data: str) -> str:
 
-        raw_data = self.get_raw_uni(speciality)
+        #raw_data = self.get_raw_data(speciality)
 
         def get_offer_data(soup: BeautifulSoup, class_name: str):
             offer = soup.find('dl', {'class': class_name})

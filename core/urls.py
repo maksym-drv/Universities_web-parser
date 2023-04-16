@@ -19,7 +19,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('parser/', include('webparser.urls')),
+    path('templates/', include('webparser.templates.urls')),
+    path('data/', include('webparser.data.urls')),
 ]
 
 admin.site.site_header = "Universities Web-parser"

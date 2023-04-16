@@ -6,14 +6,14 @@ from celery import shared_task
 from django.conf import settings
 
 @shared_task
-def create_task(specialities: list,
+def parser_task(specialities: list,
                 unis: list,
                 qualification: str,
                 education_base: str):
     
     print('im starting task!')
 
-    parser = Scraper(
+    scraper = Scraper(
         unis = unis,
         url = settings.TARGET_URL,
         executable_path = settings.EXECUTABLE_PATH,
@@ -28,7 +28,8 @@ def create_task(specialities: list,
     #     spec_unis = p.map(parser.get_uni_data, specialities)
     
     with ThreadPoolExecutor(max_workers=len(specialities)) as executor:
-        spec_unis = executor.map(parser.get_uni_data, specialities)
+        raw_unis = executor.map(scraper.get_raw_data, specialities)
+        spec_unis = executor.map(scraper.get_uni_data, raw_unis)
 
     unis = []
 

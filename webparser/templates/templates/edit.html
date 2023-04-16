@@ -13,7 +13,7 @@
       <div class="form__buttons">
         <input type="submit" value="Save changes">
         <a href="{% url 'templates' %}" class="button">Return</a>
-        <a href="{% url 'delete_template' form.instance.pk %}" class="button button__red">Delete</a>
+        <a href="{% url 'templates_delete' form.instance.pk %}" class="button button__red">Delete</a>
       </div>
       
     </form>

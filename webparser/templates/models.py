@@ -1,7 +1,8 @@
 from django.db import models
-from accounts.models import CustomUser
-from options.models import Qualification, Education_base, Speciality, University
 from django.core.validators import MinValueValidator
+from accounts.models import CustomUser
+from webparser.options.models import Qualification, \
+    Education_base, Speciality, University
 
 class Template(models.Model):
 
@@ -20,15 +21,14 @@ class Template(models.Model):
     def __str__(self):
         return self.name
 
-
-class Report(models.Model):
-
-    template = models.OneToOneField(
-        Template,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-    institutes_table    = models.BooleanField('Educational institutions ', default=True)
-    programs_table      = models.BooleanField('Educational programs of higher education institutions', default=True)
-    static_table        = models.BooleanField('Statistical data on higher education institution', default=True)
-    summary_table       = models.BooleanField('Summary data by region', default=True)
+# class Report(models.Model):
+# 
+#     template = models.OneToOneField(
+#         Template,
+#         on_delete=models.CASCADE,
+#         primary_key=True,
+#     )
+#     institutes_table    = models.BooleanField('Educational institutions ', default=True)
+#     programs_table      = models.BooleanField('Educational programs of higher education institutions', default=True)
+#     static_table        = models.BooleanField('Statistical data on higher education institution', default=True)
+#     summary_table       = models.BooleanField('Summary data by region', default=True)

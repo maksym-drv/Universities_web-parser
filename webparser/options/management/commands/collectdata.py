@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from options.models import Region, Speciality
+from webparser.options.models import Region, Speciality
 from urllib.request import urlopen
 from urllib.error import URLError
 from django.conf import settings

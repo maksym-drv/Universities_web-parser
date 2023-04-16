@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'webparser',
-    'options',
+    'webparser.data',
+    'webparser.options',
+    'webparser.templates',
 ]
 
 MIDDLEWARE = [

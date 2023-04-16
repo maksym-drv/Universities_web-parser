@@ -22,7 +22,7 @@ class Parser:
             'education_base': education_base
         }
 
-    def get_raw_uni(self, speciality: str) -> str:
+    def get_raw_data(self, speciality: str) -> str:
 
         driver = Firefox(
             executable_path = self.executable_path, 

@@ -1,5 +1,4 @@
-from .models import Template, Report
-from options.models import Speciality
+from .models import Template
 from django import forms
 from datetime import datetime
 
@@ -18,14 +17,13 @@ class NewTemplateForm(forms.ModelForm):
             'speciality'
         )
 
-
-class ReportForm(forms.ModelForm):
-
-    class Meta:
-        model = Report
-        fields = (
-            'institutes_table',
-            'programs_table',
-            'static_table',
-            'summary_table',
-        )
+# class ReportForm(forms.ModelForm):
+# 
+#     class Meta:
+#         model = Report
+#         fields = (
+#             'institutes_table',
+#             'programs_table',
+#             'static_table',
+#             'summary_table',
+#         )

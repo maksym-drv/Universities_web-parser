@@ -1,4 +1,4 @@
-FROM python:3.9.7-buster
+FROM python:3.11.3-buster
 
 ENV AM_I_IN_DOCKER 1
 ENV PYTHONDONTWRITEBYTECODE 1

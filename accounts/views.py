@@ -7,7 +7,6 @@ from django.views.generic import CreateView, FormView
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 
-
 class ProfileView(LoginRequiredMixin, SuccessMessageMixin, FormView):
 
     form_class = UserProfileForm
@@ -38,7 +37,7 @@ class SignUpView(CreateView):
 
     form_class = SignUpForm
     template_name = "signup.html"
-    success_url = reverse_lazy('new_template')
+    success_url = reverse_lazy('templates_new')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
