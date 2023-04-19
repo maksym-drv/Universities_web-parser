@@ -2,11 +2,11 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView, DeleteView, TemplateView
-from requests import get
 
 from .models import Template
 from .forms import NewTemplateForm
 from webparser.data.tasks import parser_task
+from webparser.data.scraping import Scraper
 from webparser.options.models import University, Region
 
 class InfoTemplateView(LoginRequiredMixin, TemplateView):
@@ -48,12 +48,11 @@ class NewTemplateView(LoginRequiredMixin, FormView):
         form.instance.user = self.request.user
         form.save()
         unis = self.request.POST.getlist('university')
-        if unis:
-            for uni in unis:
-                uni, created  = University.objects.get_or_create(
-                    registry_id = uni
-                )
-                form.instance.university.add(uni)
+        for uni in unis:
+            uni, created  = University.objects.get_or_create(
+                registry_id = uni
+            )
+            form.instance.university.add(uni)
         # report = Report(template = form.instance)
         # report.save()
         return super().form_valid(form)
@@ -61,24 +60,13 @@ class NewTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        response = get(settings.UNIVERSITIES_URL, 
-                       params=settings.DEFAULT_PARAMS)
-        unis: list = response.json()
         data = {}
+        unis = Scraper.get_json(
+            settings.UNIVERSITIES_URL,
+            settings.DEFAULT_PARAMS
+        )
 
-        for uni in unis:
-            
-            uni: dict
-            region = uni.pop('region_name_u')
-            region = Region.objects.get(name = region)
-
-            if not data.get(region.registry_id):
-                data[region.registry_id] = {}
-                data[region.registry_id]['name'] = region.name
-                data[region.registry_id]['unis'] = []
-                data[region.registry_id]['unis'].append(uni)
-            else: data[region.registry_id]['unis'].append(uni)
-        
+        data = Scraper.sort_region(unis, Region.objects.all())
         context['regions'] = data
         return context
 
@@ -91,6 +79,13 @@ class EditTemplateView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form: NewTemplateForm):
         form.instance.user = self.request.user
+        form.instance.university.clear()
+        unis = self.request.POST.getlist('university')
+        for uni in unis:
+            uni, created = University.objects.get_or_create(
+                registry_id = uni
+            )
+            form.instance.university.add(uni)
         form.save()
         return super().form_valid(form)
 
@@ -98,6 +93,24 @@ class EditTemplateView(LoginRequiredMixin, FormView):
         kwargs = super(EditTemplateView, self).get_form_kwargs()
         kwargs['instance'] = Template.objects.get(pk=self.kwargs['pk'])
         return kwargs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        data = {}
+        unis = Scraper.get_json(
+            settings.UNIVERSITIES_URL,
+            settings.DEFAULT_PARAMS
+        )
+
+        data = Scraper.sort_region(
+            unis, 
+            Region.objects.all(),
+            Template.objects.get(pk=self.kwargs['pk']).university.all()
+        )
+
+        context['regions'] = data
+        return context
 
 
 class DeleteTemplateView(LoginRequiredMixin, DeleteView):

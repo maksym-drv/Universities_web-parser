@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from .parsing import Parser
 from selenium.webdriver import FirefoxOptions
+from django.db.models.query import QuerySet
 
 class Scraper(Parser):
 
@@ -10,9 +11,7 @@ class Scraper(Parser):
                         qualification, education_base)
         self.unis = unis
 
-    def get_uni_data(self, raw_data: str) -> str:
-
-        #raw_data = self.get_raw_data(speciality)
+    def get_uni_data(self, raw_data: str) -> list:
 
         def get_offer_data(soup: BeautifulSoup, class_name: str):
             offer = soup.find('dl', {'class': class_name})
@@ -82,4 +81,69 @@ class Scraper(Parser):
 
             data.append(_uni)
                 
+        return data
+    
+    @staticmethod
+    def sort_region(unis: list, regions: QuerySet, 
+                    stored_unis: QuerySet = None) -> dict:
+
+        data = {}
+
+        for uni in unis:
+            uni: dict
+            region = uni.pop('region_name_u')
+            region = regions.get(name = region)
+
+            if not data.get(region.registry_id):
+                data[region.registry_id] = {}
+                data[region.registry_id]['name'] = region.name
+                data[region.registry_id]['unis'] = []
+
+            if stored_unis:
+                if stored_unis.filter(registry_id = uni['university_id']).exists():
+                    uni['checkbox_value'] = True
+            
+            data[region.registry_id]['unis'].append(uni)
+
+        return data
+    
+    @staticmethod
+    def get_region_data(raw_regions) -> list:
+
+        region_id = 'Код регіону'
+        region_name = 'Назва регіону'
+        data = []
+
+        for index, region in enumerate(raw_regions[region_id]):
+
+            data.append({
+                'name': raw_regions[region_name][index],
+                'registry_id': raw_regions[region_id][index]
+            })
+        
+        return data
+    
+    @staticmethod
+    def get_speciality_data(raw_data: str) -> list:
+
+        speciality_id = 'offers-search-speciality'
+        soup = BeautifulSoup(raw_data, 'html.parser')
+
+        select = soup.find(
+            "select", 
+            { "id": speciality_id }
+        )
+
+        data = []
+        for option in select.find_all('option'):
+
+            option: BeautifulSoup
+            speciality_id = option.get('value')
+            if not speciality_id: continue
+
+            data.append({
+                'name': option.text,
+                'registry_id': speciality_id
+            })
+            
         return data

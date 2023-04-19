@@ -10,6 +10,65 @@
       {% csrf_token %}
       {{ form.as_p }}
 
+      <p>
+        <label>Region:</label>
+      </p>
+
+      <div class="form__regions">
+      <label for="option"> All Regions  </label>
+      <input type="checkbox" id="allRegions"> 
+      </div>
+
+      {% for region_id, region in regions.items %}
+
+        <details class="form__regions">
+          <summary>
+            <label for="option"> {{ region.name }} </label>
+            <input id="{{ region_id }}" class="form__option" type="checkbox"> 
+          </summary>
+          <ol>
+
+            {% for uni in region.unis %}
+
+              <li>
+                <label>
+                  <input class="form__suboption" 
+                  type="checkbox" 
+                  name="university" 
+                  value="{{ uni.university_id }}" 
+                  data-option="{{ region_id }}"
+                  {% if uni.checkbox_value %}
+                    checked
+                  {% endif %}>
+                  {{ uni.university_name }}
+                </label>
+              </li>
+
+            {% endfor %}
+
+          </ol>
+        </details>
+
+      {% endfor %}
+      
+      <script>
+
+        $(document).ready(function () {
+          $('.form__option').each(function() {
+            var region_id = this.id;
+            var checkedCount = $(`[data-option="${region_id}"]:checked`).length,
+              checkboxes = $(`[data-option="${region_id}"]`).length;
+
+            $(this).prop({
+              'checked': checkedCount > 0,
+              'indeterminate': checkedCount > 0 && checkedCount < checkboxes
+            });
+          });
+          checkAll()
+        });
+
+      </script>
+
       <div class="form__buttons">
         <input type="submit" value="Save changes">
         <a href="{% url 'templates' %}" class="button">Return</a>

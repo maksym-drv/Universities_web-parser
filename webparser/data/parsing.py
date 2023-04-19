@@ -1,4 +1,5 @@
 from requests import get
+from pandas import read_excel
 from selenium.webdriver import Firefox, FirefoxOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,7 +23,7 @@ class Parser:
             'education_base': education_base
         }
 
-    def get_raw_data(self, speciality: str) -> str:
+    def get_raw_unis(self, speciality: str) -> str:
 
         driver = Firefox(
             executable_path = self.executable_path, 
@@ -49,3 +50,17 @@ class Parser:
         driver.quit()
 
         return raw_page
+    
+    @staticmethod
+    def get_table(url):
+        return read_excel(url)
+    
+    @staticmethod
+    def get_page(url: str, params: dict = {}):
+        response = get(url, params)
+        return response.text
+    
+    @staticmethod
+    def get_json(url: str, params: dict = {}):
+        response = get(url, params)
+        return response.json()

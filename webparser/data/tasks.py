@@ -28,7 +28,7 @@ def parser_task(specialities: list,
     #     spec_unis = p.map(parser.get_uni_data, specialities)
     
     with ThreadPoolExecutor(max_workers=len(specialities)) as executor:
-        raw_unis = executor.map(scraper.get_raw_data, specialities)
+        raw_unis = executor.map(scraper.get_raw_unis, specialities)
         spec_unis = executor.map(scraper.get_uni_data, raw_unis)
 
     unis = []

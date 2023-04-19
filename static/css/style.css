@@ -792,6 +792,12 @@ p {
   border-color: #05A4FD
 }
 
+.form__regions input[type=checkbox], input[type=radio] {
+  box-sizing: border-box;
+  height: 15px;
+  width: 15px;
+}
+
 /* form */
 .form__box {
   margin-bottom: 16px;
