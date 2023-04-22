@@ -1,7 +1,7 @@
-from requests import get
 from django.conf import settings
 from celery.result import AsyncResult
 from django.http import JsonResponse
+from webparser.data.parsing import Parser
 from webparser.options.models import Region
 
 def check_parse(request, id: str):
@@ -11,32 +11,39 @@ def check_parse(request, id: str):
     if task.state == 'SUCCESS':
         
         # the task is complete, return the result
-        unis = task.result
+        unis: list = task.result
         regions = []
+        shorts = []
 
-        response = get(settings.UNIVERSITIES_URL, 
-                    params=settings.DEFAULT_PARAMS)
-        all_unis: list = response.json()
-        
-        for uni in unis:
+        for region in Region.objects.all():
+
+            if not unis: break
             
-            region_name = next((_uni['region_name_u'] for _uni in all_unis 
-                        if _uni['university_id'] == uni['id']), None)
+            params: dict = settings.DEFAULT_PARAMS.copy()
+            params['lc'] = region.registry_id
+            region_unis: list = Parser.get_json(
+                settings.UNIVERSITIES_URL, 
+                params=params
+            )
+
+            _region = {}
+            _region['id'] = region.registry_id
+            _region['name'] = region.name
+            _region['unis'] = [uni for uni in unis 
+                                if next((True for region_uni in region_unis 
+                                if region_uni['university_id'] == uni['id']), 
+                                False)]
+
+            for uni in _region['unis']:
+                unis.remove(uni)
             
-            region_index = next((index for (index, _region) in enumerate(regions) 
-                    if _region['name'] == region_name), None)
-            
-            if isinstance(region_index, int):
-                regions[region_index]['unis'].append(uni)
-            else:
-                _region = {}
-                _region['id'] = Region.objects.get(name = region_name).registry_id
-                _region['name'] = region_name
-                _region['unis'] = []
-                _region['unis'].append(uni)
+            if _region['unis']:
                 regions.append(_region)
 
-        return JsonResponse({'status': 'SUCCESS', 'result': regions})
+        # for region in regions:
+        #     print(f'\n\n{region}\n\n')
+
+        return JsonResponse({'status': 'SUCCESS', 'result': regions, 'shorts': []})
     elif task.state == 'PENDING' or task.state == 'STARTED':
         # the task is still running
         return JsonResponse({'status': task.state})

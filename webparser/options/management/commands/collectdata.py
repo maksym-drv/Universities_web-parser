@@ -21,4 +21,4 @@ class Command(BaseCommand):
         for speciality in Scraper.get_speciality_data(specialities):
             Speciality.objects.get_or_create(**speciality)
 
-        self.stdout.write(self.style.SUCCESS("Specialities data saved!"))
+        self.stdout.write(self.style.SUCCESS("Data saved!"))

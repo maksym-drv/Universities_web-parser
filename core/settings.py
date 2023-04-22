@@ -146,7 +146,8 @@ CELERY_RESULT_BACKEND   = os.environ.get('CELERY_RESULT_BACKEND')
 
 # Parser
 
-TARGET_URL = 'https://vstup.edbo.gov.ua/offers/'
+# TARGET_URL = 'https://vstup.edbo.gov.ua/offers/'
+TARGET_URL = 'https://vstup2022.edbo.gov.ua/offers/'
 
 REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
 SPECIALITIES_URL = 'https://registry.edbo.gov.ua/files/specialities.xlsx'

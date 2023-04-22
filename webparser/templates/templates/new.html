@@ -19,12 +19,12 @@
       <input type="checkbox" id="allRegions"> 
       </div>
 
-      {% for region_id, region in regions.items %}
+      {% for region in regions %}
 
         <details class="form__regions">
           <summary>
             <label for="option"> {{ region.name }} </label>
-            <input id="{{ region_id }}" class="form__option" type="checkbox"> 
+            <input id="{{ region.id }}" class="form__option" type="checkbox"> 
           </summary>
           <ol>
 
@@ -36,7 +36,7 @@
                   type="checkbox" 
                   name="university" 
                   value="{{ uni.university_id }}" 
-                  data-option="{{ region_id }}"> 
+                  data-option="{{ region.id }}"> 
                   {{ uni.university_name }}
                 </label>
               </li>

@@ -60,14 +60,28 @@ class NewTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        data = {}
-        unis = Scraper.get_json(
-            settings.UNIVERSITIES_URL,
-            settings.DEFAULT_PARAMS
-        )
+        regions = []
+    
+        for region in Region.objects.all():
 
-        data = Scraper.sort_region(unis, Region.objects.all())
-        context['regions'] = data
+            _region = {}
+            _region['id'] = region.id
+            _region['name'] = region.name
+
+            params: dict = settings.DEFAULT_PARAMS.copy()
+            params['lc'] = region.registry_id
+
+            unis: list = Scraper.get_json(
+                settings.UNIVERSITIES_URL, 
+                params=params
+            )
+
+            _region['unis'] = unis
+
+            if _region['unis']:
+                regions.append(_region)
+
+        context['regions'] = regions
         return context
 
 
@@ -97,19 +111,36 @@ class EditTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        data = {}
-        unis = Scraper.get_json(
-            settings.UNIVERSITIES_URL,
-            settings.DEFAULT_PARAMS
-        )
+        regions = []
+    
+        for region in Region.objects.all():
 
-        data = Scraper.sort_region(
-            unis, 
-            Region.objects.all(),
-            Template.objects.get(pk=self.kwargs['pk']).university.all()
-        )
+            _region = {}
+            _region['id'] = region.id
+            _region['name'] = region.name
 
-        context['regions'] = data
+            params: dict = settings.DEFAULT_PARAMS.copy()
+            params['lc'] = region.registry_id
+
+            unis: list = Scraper.get_json(
+                settings.UNIVERSITIES_URL, 
+                params=params
+            )
+
+            saved_unis = Template.objects.get(
+                pk = self.kwargs['pk']
+            ).university.all()
+            
+            for uni in unis:
+                if saved_unis.filter(registry_id = uni['university_id']).exists():
+                    uni['checkbox_value'] = True
+
+            _region['unis'] = unis
+
+            if _region['unis']:
+                regions.append(_region)
+
+        context['regions'] = regions
         return context
 
 

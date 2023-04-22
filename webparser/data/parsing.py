@@ -53,7 +53,7 @@ class Parser:
     
     @staticmethod
     def get_table(url):
-        return read_excel(url)
+        return read_excel(url, dtype='object')
     
     @staticmethod
     def get_page(url: str, params: dict = {}):
@@ -63,4 +63,6 @@ class Parser:
     @staticmethod
     def get_json(url: str, params: dict = {}):
         response = get(url, params)
-        return response.json()
+        try: response = response.json()
+        except: response = []
+        return response

@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from .parsing import Parser
 from selenium.webdriver import FirefoxOptions
-from django.db.models.query import QuerySet
 
 class Scraper(Parser):
 
@@ -81,30 +80,6 @@ class Scraper(Parser):
 
             data.append(_uni)
                 
-        return data
-    
-    @staticmethod
-    def sort_region(unis: list, regions: QuerySet, 
-                    stored_unis: QuerySet = None) -> dict:
-
-        data = {}
-
-        for uni in unis:
-            uni: dict
-            region = uni.pop('region_name_u')
-            region = regions.get(name = region)
-
-            if not data.get(region.registry_id):
-                data[region.registry_id] = {}
-                data[region.registry_id]['name'] = region.name
-                data[region.registry_id]['unis'] = []
-
-            if stored_unis:
-                if stored_unis.filter(registry_id = uni['university_id']).exists():
-                    uni['checkbox_value'] = True
-            
-            data[region.registry_id]['unis'].append(uni)
-
         return data
     
     @staticmethod
