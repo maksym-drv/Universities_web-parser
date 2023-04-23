@@ -13,18 +13,41 @@
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
-      {{ form.as_p }}
 
       <p>
-        <label>Region:</label>
+        {{ form.name.label_tag }}
+        {{ form.name }}
+      </p>
+      <p>
+        {{ form.year.label_tag }}
+        {{ form.year }}
+      </p>
+      <p>
+        {{ form.qualification.label_tag }}
+        {{ form.qualification }}
+      </p>
+      <p>
+        {{ form.education_base.label_tag }}
+        {{ form.education_base }}
       </p>
 
-      <div class="form__regions">
-      <label for="option"> All Regions  </label>
-      <input type="checkbox" id="allRegions"> 
+      <p>
+      <details class="form__checkbox">
+        <summary>{{ form.speciality.label_tag }}</summary>
+        {{ form.speciality }}
+      </details>
+      </p>
+
+      <div>
+        <label>Обрати університети:</label>
+
+        <div class="form__regions form__checkbox">
+          <label for="option"> All Regions </label>
+          <input type="checkbox" id="allRegions">
+        </div>
+
+        <div id="regions" class="form__checkbox"></div>
       </div>
-    
-      <div id="regions"></div>
 
       <div class="form__buttons">
         <input type="submit" value="Create">
@@ -38,7 +61,7 @@
   $(document).ready(function () {
     $(".form__box").hide();
     checkTaskStatus(
-      "{% url 'regions_check' task %}", loadRegions 
+      "{% url 'regions_check' task %}", loadRegions
     );
   });
 </script>

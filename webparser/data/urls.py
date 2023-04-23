@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import check_info, check_regions, kill
+from .views import check_info, check_regions
 
 
 urlpatterns = [

@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView, DeleteView, TemplateView
 
 from .models import Template
-from .forms import NewTemplateForm
+from .forms import TemplateForm
 from webparser.data.tasks import info_task, regions_task
 from webparser.options.models import University, Region
 
@@ -39,11 +39,11 @@ class TemplatesView(LoginRequiredMixin, ListView):
 
 class NewTemplateView(LoginRequiredMixin, FormView):
 
-    form_class = NewTemplateForm
+    form_class = TemplateForm
     template_name = 'new.html'
     success_url = reverse_lazy('templates')
 
-    def form_valid(self, form: NewTemplateForm):
+    def form_valid(self, form: TemplateForm):
         form.instance.user = self.request.user
         form.save()
         unis = self.request.POST.getlist('university')
@@ -67,11 +67,11 @@ class NewTemplateView(LoginRequiredMixin, FormView):
 
 class EditTemplateView(LoginRequiredMixin, FormView):
 
-    form_class = NewTemplateForm
+    form_class = TemplateForm
     template_name = 'edit.html'
     success_url = reverse_lazy('templates')
 
-    def form_valid(self, form: NewTemplateForm):
+    def form_valid(self, form: TemplateForm):
         form.instance.user = self.request.user
         form.instance.university.clear()
         unis = self.request.POST.getlist('university')
