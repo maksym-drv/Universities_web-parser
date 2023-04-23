@@ -63,7 +63,7 @@
   $(document).ready(function () {
     $(".form__box").hide();
     checkTaskStatus(
-      "{% url 'regions_check' task %}", loadRegions 
+      "{% url 'check_task' task %}", loadRegions 
     );
   });
 </script>

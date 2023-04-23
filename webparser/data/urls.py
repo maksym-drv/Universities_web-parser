@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import check_info, check_regions
+from .views import check
 
 
 urlpatterns = [
-    path('check/<str:id>/', check_info, name='data_check'),
-    path('check-regions/<str:id>/', check_regions, name='regions_check'),
+    path('check-task/<str:id>/', check, name='check_task'),
 ]
