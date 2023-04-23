@@ -3,6 +3,11 @@
 {% block main %}
 
 <div class="container">
+
+  <div class="loader">
+    <div id="loader"></div>
+  </div>
+
   <div class="form__box">
     <h3>Create a new template</h3>
     <form method="post" enctype="multipart/form-data">
@@ -18,35 +23,8 @@
       <label for="option"> All Regions  </label>
       <input type="checkbox" id="allRegions"> 
       </div>
-
-      {% for region in regions %}
-
-        <details class="form__regions">
-          <summary>
-            <label for="option"> {{ region.name }} </label>
-            <input id="{{ region.id }}" class="form__option" type="checkbox"> 
-          </summary>
-          <ol>
-
-            {% for uni in region.unis %}
-
-              <li>
-                <label>
-                  <input class="form__suboption" 
-                  type="checkbox" 
-                  name="university" 
-                  value="{{ uni.university_id }}" 
-                  data-option="{{ region.id }}"> 
-                  {{ uni.university_name }}
-                </label>
-              </li>
-
-            {% endfor %}
-
-          </ol>
-        </details>
-
-      {% endfor %}
+    
+      <div id="regions"></div>
 
       <div class="form__buttons">
         <input type="submit" value="Create">
@@ -55,5 +33,14 @@
     </form>
   </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $(".form__box").hide();
+    checkTaskStatus(
+      "{% url 'regions_check' task %}", loadRegions 
+    );
+  });
+</script>
 
 {% endblock %}

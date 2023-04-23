@@ -1,12 +1,11 @@
-from django.conf import settings
+
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView, DeleteView, TemplateView
 
 from .models import Template
 from .forms import NewTemplateForm
-from webparser.data.tasks import parser_task
-from webparser.data.scraping import Scraper
+from webparser.data.tasks import info_task, regions_task
 from webparser.options.models import University, Region
 
 class InfoTemplateView(LoginRequiredMixin, TemplateView):
@@ -18,14 +17,14 @@ class InfoTemplateView(LoginRequiredMixin, TemplateView):
 
         template = Template.objects.get(pk = self.kwargs.get('pk'))
         
-        task = parser_task.delay(
+        task = info_task.delay(
             specialities = [speciality.registry_id for speciality in template.speciality.all()],
             unis = list(template.university.values_list('registry_id', flat=True)),
             qualification = template.qualification.registry_id,
             education_base = template.education_base.registry_id
         )
 
-        context['task_id'] = task.id
+        context['task'] = task.id
         return context
 
 
@@ -60,28 +59,9 @@ class NewTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        regions = []
-    
-        for region in Region.objects.all():
+        task = regions_task.delay()
 
-            _region = {}
-            _region['id'] = region.id
-            _region['name'] = region.name
-
-            params: dict = settings.DEFAULT_PARAMS.copy()
-            params['lc'] = region.registry_id
-
-            unis: list = Scraper.get_json(
-                settings.UNIVERSITIES_URL, 
-                params=params
-            )
-
-            _region['unis'] = unis
-
-            if _region['unis']:
-                regions.append(_region)
-
-        context['regions'] = regions
+        context['task'] = task.id
         return context
 
 
@@ -111,38 +91,16 @@ class EditTemplateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        regions = []
-    
-        for region in Region.objects.all():
+        saved_unis = Template.objects.get(
+            pk = self.kwargs['pk']
+        ).university.all()
 
-            _region = {}
-            _region['id'] = region.id
-            _region['name'] = region.name
+        task = regions_task.delay(
+            saved_unis = [uni.registry_id for uni in saved_unis],
+        )
 
-            params: dict = settings.DEFAULT_PARAMS.copy()
-            params['lc'] = region.registry_id
-
-            unis: list = Scraper.get_json(
-                settings.UNIVERSITIES_URL, 
-                params=params
-            )
-
-            saved_unis = Template.objects.get(
-                pk = self.kwargs['pk']
-            ).university.all()
-            
-            for uni in unis:
-                if saved_unis.filter(registry_id = uni['university_id']).exists():
-                    uni['checkbox_value'] = True
-
-            _region['unis'] = unis
-
-            if _region['unis']:
-                regions.append(_region)
-
-        context['regions'] = regions
+        context['task'] = task.id
         return context
-
 
 class DeleteTemplateView(LoginRequiredMixin, DeleteView):
 

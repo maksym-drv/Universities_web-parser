@@ -4,14 +4,13 @@ from concurrent.futures import ThreadPoolExecutor
 from .scraping import Scraper
 from celery import shared_task
 from django.conf import settings
+from webparser.options.models import Region
 
 @shared_task
-def parser_task(specialities: list,
+def info_task(specialities: list,
                 unis: list,
                 qualification: str,
                 education_base: str):
-    
-    print('im starting task!')
 
     scraper = Scraper(
         unis = unis,
@@ -21,8 +20,6 @@ def parser_task(specialities: list,
         qualification = qualification,
         education_base = education_base
     )
-
-    print('im in the task')
 
     # with Pool(len(specialities)) as p:
     #     spec_unis = p.map(parser.get_uni_data, specialities)
@@ -49,3 +46,34 @@ def parser_task(specialities: list,
                 unis.append(_uni)
 
     return unis
+
+@shared_task
+def regions_task(saved_unis: list = []):
+    
+    regions = []
+    
+    for region in Region.objects.all():
+
+        _region = {}
+        _region['id'] = region.id
+        _region['name'] = region.name
+
+        params: dict = settings.DEFAULT_PARAMS.copy()
+        params['lc'] = region.registry_id
+
+        unis: list = Scraper.get_json(
+            settings.UNIVERSITIES_URL, 
+            params=params
+        )
+        
+        if saved_unis:
+            for uni in unis:
+                if uni['university_id'] in saved_unis:
+                    uni['checkbox'] = True
+
+        _region['unis'] = unis
+
+        if _region['unis']:
+            regions.append(_region)
+
+    return regions

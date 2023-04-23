@@ -3,6 +3,11 @@
 {% block main %}
 
 <div class="container">
+
+  <div class="loader">
+    <div id="loader"></div>
+  </div>
+
   <div class="form__box">
     <h3>Edit the template</h3>
     <form method="post" enctype="multipart/form-data">
@@ -19,55 +24,7 @@
       <input type="checkbox" id="allRegions"> 
       </div>
 
-      {% for region in regions %}
-
-        <details class="form__regions">
-          <summary>
-            <label for="option"> {{ region.name }} </label>
-            <input id="{{ region.id }}" class="form__option" type="checkbox"> 
-          </summary>
-          <ol>
-
-            {% for uni in region.unis %}
-
-              <li>
-                <label>
-                  <input class="form__suboption" 
-                  type="checkbox" 
-                  name="university" 
-                  value="{{ uni.university_id }}" 
-                  data-option="{{ region.id }}"
-                  {% if uni.checkbox_value %}
-                    checked
-                  {% endif %}>
-                  {{ uni.university_name }}
-                </label>
-              </li>
-
-            {% endfor %}
-
-          </ol>
-        </details>
-
-      {% endfor %}
-      
-      <script>
-
-        $(document).ready(function () {
-          $('.form__option').each(function() {
-            var region_id = this.id;
-            var checkedCount = $(`[data-option="${region_id}"]:checked`).length,
-              checkboxes = $(`[data-option="${region_id}"]`).length;
-
-            $(this).prop({
-              'checked': checkedCount > 0,
-              'indeterminate': checkedCount > 0 && checkedCount < checkboxes
-            });
-          });
-          checkAll()
-        });
-
-      </script>
+      <div id="regions"></div>
 
       <div class="form__buttons">
         <input type="submit" value="Save changes">
@@ -78,5 +35,14 @@
     </form>
   </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $(".form__box").hide();
+    checkTaskStatus(
+      "{% url 'regions_check' task %}", loadRegions 
+    );
+  });
+</script>
 
 {% endblock %}

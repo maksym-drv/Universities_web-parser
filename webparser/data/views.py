@@ -4,13 +4,12 @@ from django.http import JsonResponse
 from webparser.data.parsing import Parser
 from webparser.options.models import Region
 
-def check_parse(request, id: str):
+def check_info(request, id: str):
 
     # check the task status
     task = AsyncResult(id)
     if task.state == 'SUCCESS':
         
-        # the task is complete, return the result
         unis: list = task.result
         regions = []
         shorts = []
@@ -40,13 +39,21 @@ def check_parse(request, id: str):
             if _region['unis']:
                 regions.append(_region)
 
-        # for region in regions:
-        #     print(f'\n\n{region}\n\n')
-
         return JsonResponse({'status': 'SUCCESS', 'result': regions, 'shorts': []})
     elif task.state == 'PENDING' or task.state == 'STARTED':
-        # the task is still running
         return JsonResponse({'status': task.state})
     else:
-        # the task failed
+        return JsonResponse({'status': 'FAILURE', 'result': task.result})
+    
+
+def check_regions(request, id: str):
+
+    # check the task status
+    task = AsyncResult(id)
+    if task.state == 'SUCCESS':
+        regions: list = task.result
+        return JsonResponse({'status': 'SUCCESS', 'result': regions, 'shorts': []})
+    elif task.state == 'PENDING' or task.state == 'STARTED':
+        return JsonResponse({'status': task.state})
+    else:
         return JsonResponse({'status': 'FAILURE', 'result': task.result})
