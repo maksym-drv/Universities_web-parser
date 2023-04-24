@@ -24,6 +24,7 @@ class InfoTemplateView(LoginRequiredMixin, TemplateView):
             education_base = template.education_base.registry_id
         )
 
+        context['template'] = template
         context['task'] = task.id
         return context
 

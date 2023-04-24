@@ -4,19 +4,33 @@
 
 <div class="container container__lg">
 
+  <h3 class="template__name">{{ template.name }}</h3>
+
   <div class="loader">
     <div id="loader"></div>
   </div>
 
   <div class="templates__subtitles">
     <nav class="mode__options">
-      <ol id="modes"></ol>
+      <ol id="modes">
+        <li class="mode__option" data-value="unis">
+          <a href="#">Статистичні дані</a>
+        </li> 
+        |
+        <li class="mode__option" data-value="short">
+          <a href="#">Зведені дані</a>
+        </li>
+      </ol>
     </nav>
   </div>
 
   <div class="templates__subtitles">
     <nav class="subtitles__options">
-      <ol id="subtitles"></ol>
+      <ol id="subtitles">
+        <li class="subtitles__option" data-section="0">
+          <a href="#">Всі регіони</a>
+        </li>
+      </ol>
     </nav>
   </div>
 
@@ -27,6 +41,8 @@
 
 <script>
   $(document).ready(function () {
+    $(".template__name").hide();
+    $(".templates__subtitles").hide();
     checkTaskStatus(
       "{% url 'check_task' task %}", loadInfo
     );

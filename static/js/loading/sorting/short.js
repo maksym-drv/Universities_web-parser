@@ -1,5 +1,5 @@
 
-function loadSpec(spec) {
+function getShortTable(spec) {
 
     var shortTable = $("<div>", { class: "templatesItem shortTable" });
     var shortTableObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" });
@@ -44,7 +44,7 @@ function loadSpec(spec) {
     </tr>
     <tr>
         <td></td>
-        <td>Всього:</td>
+        <th>Всього:</th>
         <td>${spec.apps}</td>
         <td>${spec.budget}</td>
         <td>${spec.contract}</td>

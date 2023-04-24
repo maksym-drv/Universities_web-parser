@@ -23,7 +23,7 @@ function loadInfo(regions) {
     });
 
     $('.mode__option').click(function () {
-        var value = $(this).data('value');  
+        var value = $(this).data('value');
         if (value == "unis") {
             $(".uniTable").show()
             $(".shortTable").hide()
@@ -33,39 +33,16 @@ function loadInfo(regions) {
         };
     });
 
+    $(".template__name").show();
     $(".templates__subtitles").css("border-bottom", "1px solid black");
+    $(".templates__subtitles").show();
     $(".shortTable").hide();
     $("#loader").hide();
 };
 
 // loading of content data
 function loadOptions(regions) {
-    var subtitles = $("#subtitles"),
-        modes = $("#modes");
-
-    var first_text = $("<a>", { href: "#", text: "All Regions" }),
-        unisTableText = $("<a>", { href: "#", text: "Статистичні дані" }),
-        shortTableText = $("<a>", { href: "#", text: "Зведені дані" });
-
-    var first_elem = $("<li>", {
-        class: "subtitles__option",
-        "data-section": "0"
-    }),
-        unisTableElem = $("<li>", {
-            class: "mode__option",
-            "data-value": "unis"
-        }),
-        shortTableElem = $("<li>", {
-            class: "mode__option",
-            "data-value": "short"
-        });
-
-    first_elem.append(first_text);
-    unisTableElem.append(unisTableText);
-    shortTableElem.append(shortTableText);
-
-    subtitles.append(first_elem);
-    modes.append(unisTableElem, ' | ', shortTableElem)
+    var subtitles = $("#subtitles");
 
     regions.forEach(region => {
 
@@ -89,14 +66,14 @@ function loadRegion(region) {
     var regionName = $("<h3>").append(regionIcon, ` ${region.name}`);
     newRegion.append(regionName);
 
-    region.unis.forEach(uni => {
+    region.static.forEach(uni => {
         var newUni = loadUni(uni);
         newRegion.append(newUni);
     });
 
-    region.specs.forEach(spec => {
-        var newSpec = loadSpec(spec);
-        newRegion.append(newSpec);
+    region.short.forEach(spec => {
+        var newShortTable = getShortTable(spec);
+        newRegion.append(newShortTable);
     });
 
     return newRegion;
