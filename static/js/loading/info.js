@@ -2,7 +2,7 @@
 
 function loadInfo(regions) {
 
-    loadSubtitles(regions);
+    loadOptions(regions);
     var content = $("#content");
 
     regions.forEach(region => {
@@ -22,31 +22,51 @@ function loadInfo(regions) {
         }
     });
 
+    $('.mode__option').click(function () {
+        var value = $(this).data('value');  
+        if (value == "unis") {
+            $(".uniTable").show()
+            $(".shortTable").hide()
+        } else if (value == "short") {
+            $(".uniTable").hide()
+            $(".shortTable").show()
+        };
+    });
+
     $(".templates__subtitles").css("border-bottom", "1px solid black");
+    $(".shortTable").hide();
     $("#loader").hide();
 };
 
 // loading of content data
-function loadSubtitles(regions) {
-    var subtitles = $("#subtitles");
+function loadOptions(regions) {
+    var subtitles = $("#subtitles"),
+        modes = $("#modes");
 
-    var first_text = $("<a>", { href: "#", text: "All Regions" });
-    var last_text = $("<a>", { href: "#", text: "Short data" });
+    var first_text = $("<a>", { href: "#", text: "All Regions" }),
+        unisTableText = $("<a>", { href: "#", text: "Статистичні дані" }),
+        shortTableText = $("<a>", { href: "#", text: "Зведені дані" });
 
     var first_elem = $("<li>", {
         class: "subtitles__option",
-        "data-section": "0",
-    });
-
-    var last_elem = $("<li>", {
-        class: "subtitles__option",
-        "data-section": "short",
-    });
+        "data-section": "0"
+    }),
+        unisTableElem = $("<li>", {
+            class: "mode__option",
+            "data-value": "unis"
+        }),
+        shortTableElem = $("<li>", {
+            class: "mode__option",
+            "data-value": "short"
+        });
 
     first_elem.append(first_text);
-    last_elem.append(last_text);
+    unisTableElem.append(unisTableText);
+    shortTableElem.append(shortTableText);
 
     subtitles.append(first_elem);
+    modes.append(unisTableElem, ' | ', shortTableElem)
+
     regions.forEach(region => {
 
         var sub_text = $("<a>", { href: "#", text: `${region.name}    ` });
@@ -57,7 +77,6 @@ function loadSubtitles(regions) {
         sub_elem.append(sub_text);
         subtitles.append(' / ', sub_elem);
     });
-    subtitles.append(' / ', last_elem);
 };
 
 function loadRegion(region) {
@@ -75,70 +94,10 @@ function loadRegion(region) {
         newRegion.append(newUni);
     });
 
+    region.specs.forEach(spec => {
+        var newSpec = loadSpec(spec);
+        newRegion.append(newSpec);
+    });
+
     return newRegion;
-};
-
-function loadUni(uni) {
-    var newUniItem = $("<div>", { class: "templatesItem" });
-
-    var newUniObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" });
-    var newUniName =
-        `<div class="templatesItem__desc__name">
-      <span class="templatesItem__icon">
-        <i class="fa-solid fa-building-columns"></i>
-      </span>
-      <span>${uni.name}</span>
-    </div>`
-    newUniObj.html(newUniName);
-
-    var newUniText = $("<div>", { class: "templatesItem__desc__text" });
-
-    var table = $("<table>");
-
-    var tableCol = $("<col>", {
-        span: "1",
-        style: "width: 35%;"
-    });
-    var firstRow = $("<tr>");
-
-    var rowName = $("<th>", { text: "Name" });
-    var rowSpeciality = $("<th>", { text: "Speciality" });
-    var rowForm = $("<th>", { text: "Form" });
-    var rowApplications = $("<th>", { text: "Applications" });
-    var rowBudget = $("<th>", { text: "Enrolled (Budget)" });
-    var rowContract = $("<th>", { text: "Enrolled (Contract)" });
-    var rowPrice = $("<th>", { text: "Price" });
-    firstRow.append(rowName, rowSpeciality, rowForm,
-        rowApplications, rowBudget, rowContract, rowPrice);
-
-    table.append(tableCol, firstRow)
-
-    uni.offers.forEach(offer => {
-        var newOffer = loadOffer(offer);
-        table.append(newOffer);
-    });
-
-    newUniText.append(table);
-    newUniObj.append(newUniText);
-    newUniItem.append(newUniObj);
-
-    return newUniItem;
-
-};
-
-function loadOffer(offer) {
-    var row = $("<tr>");
-
-    var rowName = $("<td>", { text: offer.name });
-    var rowSpeciality = $("<td>", { text: offer.id });
-    var rowForm = $("<td>", { text: offer.form });
-    var rowApplications = $("<td>", { text: offer.applications });
-    var rowBudget = $("<td>", { text: offer.ob });
-    var rowContract = $("<td>", { text: offer.oc });
-    var rowPrice = $("<td>", { text: offer.price });
-
-    row.append(rowName, rowSpeciality, rowForm,
-        rowApplications, rowBudget, rowContract, rowPrice);
-
-    return row;
 };

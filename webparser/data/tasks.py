@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .scraping import Scraper
 from celery import shared_task
 from django.conf import settings
-from webparser.options.models import Region
+from webparser.options.models import Region, Speciality
 
 @shared_task
 def info_task(specialities: list,
@@ -40,6 +40,7 @@ def info_task(specialities: list,
         _region = {}
         _region['id'] = region.registry_id
         _region['name'] = region.name
+        _region['specs'] = []
         _region['unis'] = []
 
         params: dict = settings.DEFAULT_PARAMS.copy()
@@ -54,7 +55,52 @@ def info_task(specialities: list,
             if next((True for region_uni in region_unis 
                 if region_uni['university_id'] == uni['id']), 
                 False):
-                    
+
+                for offer in uni['offers']:
+                    offer: dict
+
+                    spec_index = next(
+                    (index for (index, _spec) in enumerate(_region['specs'])
+                    if _spec['id'] == offer['id']), None)
+
+                    if not isinstance(spec_index, int):
+                        _spec = {}
+                        _spec['id'] = offer['id']
+                        _spec['name'] = Speciality.objects.get(
+                            registry_id = offer['id']
+                        ).name
+                        for _name in ('fulltime_apps', 'parttime_apps', 'apps', 
+                                    'fulltime_budget', 'fulltime_contract', 'budget',
+                                    'parttime_budget', 'parttime_contract', 'contract',
+                                    'enrolled', 'max_price', 'min_price',):
+                            _spec[_name] = 0
+                        _region['specs'].append(_spec)
+                        spec_index = _region['specs'].index(_spec)
+
+                    if_exist = lambda name: int(offer[name]) if offer.get(name) else 0
+
+                    spec = _region['specs'][spec_index]
+
+                    spec['fulltime_apps'] += if_exist('applications') if offer['form'] == 'Денна' else 0
+                    spec['parttime_apps'] += if_exist('applications') if offer['form'] == 'Заочна' else 0
+                    spec['fulltime_budget'] += if_exist('ob') if offer['form'] == 'Денна' else 0
+                    spec['fulltime_contract'] += if_exist('oc') if offer['form'] == 'Денна' else 0
+                    spec['parttime_budget'] += if_exist('ob') if offer['form'] == 'Заочна' else 0
+                    spec['parttime_contract'] += if_exist('oc') if offer['form'] == 'Заочна' else 0
+
+                    spec['apps'] = spec['fulltime_apps'] + spec['parttime_apps']
+                    spec['budget'] = spec['fulltime_budget'] + spec['parttime_budget']
+                    spec['contract'] = spec['fulltime_contract'] + spec['parttime_contract']
+                    spec['enrolled'] = spec['budget'] + spec['contract']
+
+                    spec['max_price'] = offer['price'] if \
+                        offer['form'] == 'Денна' and int(offer['price']) > int(spec['max_price']) \
+                            else int(spec['max_price'])
+
+                    spec['min_price'] = offer['price'] if \
+                        offer['form'] == 'Заочна' and int(offer['price']) < int(spec['min_price']) \
+                            or spec['min_price'] == 0 else int(spec['min_price'])
+                        
                 uni_index = next(
                     (index for (index, _uni) in enumerate(_region['unis'])
                     if _uni['id'] == uni['id']), None)

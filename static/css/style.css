@@ -589,15 +589,18 @@ p {
   margin: 15px;
 }
 
+.mode__options ol,
 .subtitles__options ol {
     list-style-type: none;
     padding-left: 0;
 }
 
+.mode__option,
 .subtitles__option {
     display: inline-block;
 }
 
+.mode__option a::after,
 .subtitles__option a::after {
     display: inline-block;
     color: #000;
@@ -605,6 +608,23 @@ p {
     font-weight: bold;
     padding: 0 3px;
 }
+
+/*.mode__options ol {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.mode__option {
+  display: inline-block;
+}
+
+.mode__option a::after {
+  display: inline-block;
+  color: #000;
+  font-size: 80%;
+  font-weight: bold;
+  padding: 0 3px;
+}*/
 
 .templatesItem__buttons {
   display: flex;
