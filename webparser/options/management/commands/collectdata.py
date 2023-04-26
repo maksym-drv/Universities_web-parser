@@ -15,10 +15,10 @@ class Command(BaseCommand):
         except URLError:
             raise CommandError('Cannot connect to the server.')
         
-        for region in Scraper.get_region_data(regions):
+        for region in Scraper.get_region_options(regions):
             Region.objects.get_or_create(**region)
 
-        for speciality in Scraper.get_speciality_data(specialities):
+        for speciality in Scraper.get_speciality_options(specialities):
             Speciality.objects.get_or_create(**speciality)
 
         self.stdout.write(self.style.SUCCESS("Data saved!"))

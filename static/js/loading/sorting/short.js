@@ -23,8 +23,8 @@ function getShortTable(spec) {
     <tr>
         <th>Бюджет</th>
         <th>Контракт</th>
-        <th>Мін. заочна </th>
-        <th>Макс. денна </th>
+        <th>Мінімальна</th>
+        <th>Максимальна</th>
     </tr>
     <tr>
         <td rowspan="2">${spec.name}</td>
@@ -32,15 +32,18 @@ function getShortTable(spec) {
         <td>${spec.fulltime_apps}</td>
         <td>${spec.fulltime_budget}</td>
         <td>${spec.fulltime_contract}</td>
-        <td rowspan="2">${spec.enrolled}</td>
-        <td rowspan="2">${spec.min_price}</td>
-        <td rowspan="2">${spec.max_price} </td>
+        <td>${spec.fulltime}</td>
+        <td>${spec.min_fulltime}</td>
+        <td>${spec.max_fulltime} </td>
     </tr>
     <tr>
         <td>Заочна</td>
         <td>${spec.parttime_apps}</td>
         <td>${spec.parttime_budget}</td>
         <td>${spec.parttime_contract}</td>
+        <td>${spec.parttime}</td>
+        <td>${spec.min_parttime}</td>
+        <td>${spec.max_parttime} </td>
     </tr>
     <tr>
         <td></td>
@@ -48,7 +51,7 @@ function getShortTable(spec) {
         <td>${spec.apps}</td>
         <td>${spec.budget}</td>
         <td>${spec.contract}</td>
-        <td></td>
+        <th>${spec.enrolled}</th>
         <td></td>
         <td></td>
     </tr>`;

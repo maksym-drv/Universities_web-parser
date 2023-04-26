@@ -83,7 +83,7 @@ class Scraper(Parser):
         return data
     
     @staticmethod
-    def get_region_data(raw_regions) -> list:
+    def get_region_options(raw_regions) -> list:
 
         region_id = 'Код регіону'
         region_name = 'Назва регіону'
@@ -99,7 +99,7 @@ class Scraper(Parser):
         return data
     
     @staticmethod
-    def get_speciality_data(raw_data: str) -> list:
+    def get_speciality_options(raw_data: str) -> list:
 
         speciality_id = 'offers-search-speciality'
         soup = BeautifulSoup(raw_data, 'html.parser')

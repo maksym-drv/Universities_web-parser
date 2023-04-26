@@ -16,7 +16,8 @@ class Sorter:
         for _name in ('fulltime_apps', 'parttime_apps', 'apps', 
                     'fulltime_budget', 'fulltime_contract', 'budget',
                     'parttime_budget', 'parttime_contract', 'contract',
-                    'enrolled', 'max_price', 'min_price',):
+                    'enrolled', 'max_fulltime', 'min_fulltime',
+                    'max_parttime', 'min_parttime', ):
             _spec[_name] = 0
 
         self.short_tables.append(_spec)
@@ -50,21 +51,34 @@ class Sorter:
                 offer['form'] == 'Заочна' else 0
             spec['parttime_contract'] += if_exist('oc') if \
                 offer['form'] == 'Заочна' else 0
-
+            
+            
             spec['apps'] = spec['fulltime_apps'] + spec['parttime_apps']
             spec['budget'] = spec['fulltime_budget'] + spec['parttime_budget']
             spec['contract'] = spec['fulltime_contract'] + spec['parttime_contract']
+            spec['fulltime'] = spec['fulltime_budget'] + spec['fulltime_contract']
+            spec['parttime'] = spec['parttime_budget'] + spec['parttime_contract']
             spec['enrolled'] = spec['budget'] + spec['contract']
 
-            spec['max_price'] = offer['price'] if \
+            spec['max_fulltime'] = offer['price'] if \
                 offer['form'] == 'Денна' and \
-                if_exist('price') > int(spec['max_price']) \
-                    else int(spec['max_price'])
-
-            spec['min_price'] = offer['price'] if \
+                if_exist('price') > int(spec['max_fulltime']) \
+                    else int(spec['max_fulltime'])
+            
+            spec['min_fulltime'] = offer['price'] if \
+                offer['form'] == 'Денна' and \
+                if_exist('price') < int(spec['min_fulltime']) \
+                    or spec['min_fulltime'] == 0 else int(spec['min_fulltime'])
+            
+            spec['max_parttime'] = offer['price'] if \
                 offer['form'] == 'Заочна' and \
-                if_exist('price') < int(spec['min_price']) \
-                    or spec['min_price'] == 0 else int(spec['min_price'])
+                if_exist('price') > int(spec['max_parttime']) \
+                    else int(spec['max_parttime'])
+
+            spec['min_parttime'] = offer['price'] if \
+                offer['form'] == 'Заочна' and \
+                if_exist('price') < int(spec['min_parttime']) \
+                    or spec['min_parttime'] == 0 else int(spec['min_parttime'])
 
     def get_static_table(self, unis: list, 
                    region_unis: list) -> list:
