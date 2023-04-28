@@ -1,9 +1,10 @@
 // check task status
 
-function checkTaskStatus (url, successAction) {
+function checkTaskStatus (url, csrftoken, successAction) {
   $.ajax({
     url: url,
-    type: 'get',
+    type: 'post',
+    headers: {'X-CSRFToken': csrftoken},
     dataType: 'json',
     success: function(data) {
       if (data.status == 'SUCCESS') {
@@ -11,7 +12,7 @@ function checkTaskStatus (url, successAction) {
       } else if (data.status == 'PENDING' || data.status == 'STARTED') {
         // the task is still running, check again later
         setTimeout(function() {
-          checkTaskStatus(url, successAction);
+          checkTaskStatus(url, csrftoken, successAction);
         }, 1000);
       } else {
         console.log('The task failed.');

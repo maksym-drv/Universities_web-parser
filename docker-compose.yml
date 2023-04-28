@@ -19,10 +19,12 @@ services:
     volumes:
       - .:/web-parser
       - static:/parser/staticfiles/
+      - media:/parser/mediafiles/
     expose:
       - 8000
     env_file:
       - ./.dev.env
+      - ./.celery.env
     depends_on:
       - db
 
@@ -37,7 +39,7 @@ services:
     entrypoint: [ "/parser/entrypoint.sh" ]
     env_file:
       - ./.dev.env
-      - ./.db.env
+      - ./.celery.env
     depends_on:
       - redis
 
@@ -46,6 +48,7 @@ services:
     build: ./nginx
     volumes:
       - static:/staticfiles/
+      - media:/mediafiles/
     ports:
       - 80:80
     depends_on:
@@ -54,3 +57,4 @@ services:
 volumes:
   postgres:
   static:
+  media:

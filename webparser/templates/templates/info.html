@@ -39,12 +39,17 @@
   <!-- /.templates -->
 </div>
 
+{% csrf_token %}
 <script>
   $(document).ready(function () {
     $(".template__name").hide();
     $(".templates__subtitles").hide();
     checkTaskStatus(
-      "{% url 'check_task' task %}", loadInfo
+      "{% url 'check_task' task %}", 
+      document.querySelector(
+        '[name=csrfmiddlewaretoken]'
+      ).value,
+      loadInfo
     );
   });
 </script>

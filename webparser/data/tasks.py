@@ -1,17 +1,17 @@
 #from multiprocessing.dummy import Pool
 #from threading import Thread
-from concurrent.futures import ThreadPoolExecutor
 from .sorting import Sorter
 from .scraping import Scraper
 from celery import shared_task
 from django.conf import settings
 from webparser.options.models import Region
+from concurrent.futures import ThreadPoolExecutor
 
-@shared_task
+@shared_task(name='info')
 def info_task(specialities: list,
                 unis: list,
                 qualification: str,
-                education_base: str):
+                education_base: str) -> list:
 
     scraper = Scraper(
         unis = unis,
@@ -66,8 +66,8 @@ def info_task(specialities: list,
 
     return regions
 
-@shared_task
-def regions_task(saved_unis: list = []):
+@shared_task(name='regions')
+def regions_task(saved_unis: list = []) -> list:
     
     regions = []
     

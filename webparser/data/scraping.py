@@ -12,16 +12,17 @@ class Scraper(Parser):
 
     def get_uni_data(self, raw_data: str) -> list:
 
-        def get_offer_data(soup: BeautifulSoup, class_name: str):
+        def get_offer_data(soup: BeautifulSoup, class_name: str) -> str:
             offer = soup.find('dl', {'class': class_name})
             if not offer: return
             return offer.find('dd').text
         
-        def get_stat_data(soup: BeautifulSoup, class_name: str):
+        def get_stat_data(soup: BeautifulSoup, class_name: str) -> int:
             if not soup: return 0
             stat = soup.find('div', {'class': class_name})
             if not stat: return 0
-            return stat.find('div', {'class': 'value'}).text
+            value = stat.find('div', {'class': 'value'}).text
+            return int(value)
 
         soup = BeautifulSoup(raw_data, 'html.parser')
 
@@ -62,19 +63,19 @@ class Scraper(Parser):
                 
                 price = get_offer_data(offer, 'row offer-education-price')
                 if price: 
-                    _offer['price'] = price
+                    _offer['price'] = int(price)
+                else: _offer['price'] = 'Немає даних'
                 
                 statistics = offer.find('div', {'class': 'offer-requests-stats'})
 
-                applications = get_stat_data(statistics, 'stats-field-t')
-                if applications:
-                    _offer['applications'] = applications
+                apps = get_stat_data(statistics, 'stats-field-t')
+                _offer['apps'] = apps
                 
                 ob = get_stat_data(statistics, 'stats-field-ob')
-                if ob: _offer['ob'] = ob
+                _offer['ob'] = ob
                 
                 oc = get_stat_data(statistics, 'stats-field-oc')
-                if oc: _offer['oc'] = oc
+                _offer['oc'] = oc
 
                 _uni['offers'].append(_offer)
 

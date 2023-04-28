@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import check
-
+from .views import TaskView
 
 urlpatterns = [
-    path('check-task/<str:id>/', check, name='check_task'),
+    path('task/<str:id>/', TaskView.as_view(), name='check_task'),
 ]

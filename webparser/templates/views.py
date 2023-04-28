@@ -1,4 +1,3 @@
-
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView, DeleteView, TemplateView
@@ -6,7 +5,7 @@ from django.views.generic import ListView, FormView, DeleteView, TemplateView
 from .models import Template
 from .forms import TemplateForm
 from webparser.data.tasks import info_task, regions_task
-from webparser.options.models import University, Region
+from webparser.options.models import University
 
 class InfoTemplateView(LoginRequiredMixin, TemplateView):
 
@@ -108,47 +107,3 @@ class DeleteTemplateView(LoginRequiredMixin, DeleteView):
     model = Template
     success_url = reverse_lazy('templates')
     template_name = 'delete.html'
-
-
-## class ReportView(LoginRequiredMixin, FormView):
-## 
-##     form_class = ReportForm
-##     template_name = 'report.html'
-## 
-##     def form_valid(self, form: NewTemplateForm):
-##         form.save()
-##         self.success_url = reverse_lazy('download_report', kwargs={'pk': self.kwargs['pk']})
-##         return super().form_valid(form)
-## 
-##     def get_form_kwargs(self):
-##         kwargs = super(ReportView, self).get_form_kwargs()
-##         kwargs['instance'] = Report.objects.get(pk=self.kwargs['pk'])
-##         return kwargs
-## 
-## 
-## class DownloadReportView(LoginRequiredMixin, TemplateView):
-## 
-##     template_name = 'download_report.html'
-## 
-##     def get(self, request, pk: int):
-## 
-##         report = Report.objects.get(pk=pk)
-##         options: Template = report.template
-## 
-##         parser = Parser(
-##             qualification   = options.qualification,
-##             education_base  = options.education_base,
-##             speciality      = options.speciality,
-##             region          = options.region,
-##             education_form  = options.education_form,
-##             course          = options.course,
-##             university      = options.university,
-##             study_program   = options.study_program,
-##         )
-## 
-##         for name in parser.names:
-##             print('name ==> ', name) 
-## 
-##         context = {}
-##         context['data'] = parser.names
-##         return self.render_to_response(context)

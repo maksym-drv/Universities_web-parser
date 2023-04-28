@@ -25,12 +25,12 @@ function loadUni(uni) {
     var rowName = $("<th>", { text: "Name" });
     var rowSpeciality = $("<th>", { text: "Speciality" });
     var rowForm = $("<th>", { text: "Form" });
-    var rowApplications = $("<th>", { text: "Applications" });
+    var rowApps = $("<th>", { text: "Applications" });
     var rowBudget = $("<th>", { text: "Enrolled (Budget)" });
     var rowContract = $("<th>", { text: "Enrolled (Contract)" });
     var rowPrice = $("<th>", { text: "Price" });
     firstRow.append(rowName, rowSpeciality, rowForm,
-        rowApplications, rowBudget, rowContract, rowPrice);
+        rowApps, rowBudget, rowContract, rowPrice);
 
     table.append(tableCol, firstRow)
 
@@ -53,13 +53,13 @@ function loadOffer(offer) {
     var rowName = $("<td>", { text: offer.name });
     var rowSpeciality = $("<td>", { text: offer.id });
     var rowForm = $("<td>", { text: offer.form });
-    var rowApplications = $("<td>", { text: offer.applications });
+    var rowApps = $("<td>", { text: offer.apps });
     var rowBudget = $("<td>", { text: offer.ob });
     var rowContract = $("<td>", { text: offer.oc });
     var rowPrice = $("<td>", { text: offer.price });
 
     row.append(rowName, rowSpeciality, rowForm,
-        rowApplications, rowBudget, rowContract, rowPrice);
+        rowApps, rowBudget, rowContract, rowPrice);
 
     return row;
 };
