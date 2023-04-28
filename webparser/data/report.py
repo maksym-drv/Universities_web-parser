@@ -5,9 +5,9 @@ from django.conf import settings
 class Report:
     
     def get_file(sort_table):
-        def wrapper(regions: list, file_name: str, id: str) -> str:
+        def wrapper(regions: list, name: str, id: str) -> str:
 
-            file_name = f'{file_name}_{id}.xlsx'
+            file_name = f'{name}_{id}.xlsx'
             file_path = path.join(settings.MEDIA_ROOT, file_name)
             writer = pd.ExcelWriter(file_path)
 
@@ -16,7 +16,7 @@ class Report:
 
             for region in regions:
 
-                _table = sort_table(region['short'])        
+                _table = sort_table(region[name])        
 
                 df = pd.DataFrame(_table)
 
@@ -70,6 +70,8 @@ class Report:
 
             for _name in region.keys():
                 region[_name].append('')
+
+        return region
     
     @get_file
     @staticmethod

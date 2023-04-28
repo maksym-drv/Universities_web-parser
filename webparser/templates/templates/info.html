@@ -49,7 +49,8 @@
       document.querySelector(
         '[name=csrfmiddlewaretoken]'
       ).value,
-      loadInfo
+      loadInfo,
+      { "template": "{{ template.id }}" }
     );
   });
 </script>

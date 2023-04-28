@@ -1,9 +1,9 @@
-from celery.result import AsyncResult
-from django.http import JsonResponse
-from .report import Report as rprt
 from django.views import View
-from accounts.models import CustomUser
 from django.core.files import File
+from django.http import JsonResponse
+from celery.result import AsyncResult
+from webparser.templates.models import Template
+from .report import Report as rprt
 
 class TaskView(View):
 
@@ -11,30 +11,49 @@ class TaskView(View):
 
         task = AsyncResult(id)
         if task.state == 'SUCCESS':
+            
+            result: dict = {}
+            files: list = []
             regions: list = task.result
 
-            if task.name == 'info':
-                pass
-                
-                # file_path = rprt.static_data(1, regions)
-                # with open(file_path, 'rb') as f:
-                #     file = File(f)
-                #     user: CustomUser = request.user
-                #     user.short_table.delete()
-                #     user.short_table.save('static.xlsx', file, save=True)
-                #     user.save()
-                # rprt.delete(file_path)
+            if task.name == 'info' \
+                and request.POST.get('template'):
+
+                tmplt = Template.objects.get(id = request.POST['template'])
+            
+                file_path = rprt.static_data(regions, 'static', task.id)
+                with open(file_path, 'rb') as f:
+                    file = File(f)
+                    tmplt.static_table.delete()
+                    tmplt.static_table.save('static.xlsx', file, save=True)
+                    tmplt.save()
+                rprt.delete(file_path)
+
+                report = {
+                    'text': 'Завантажити статистичні дані',
+                    'url': tmplt.static_table.url
+                }
+                files.append(report)
 
                 file_path = rprt.short_data(regions, 'short', task.id)
                 with open(file_path, 'rb') as f:
                     file = File(f)
-                    user: CustomUser = request.user
-                    user.short_table.delete()
-                    user.short_table.save('short.xlsx', file, save=True)
-                    user.save()
+                    tmplt.short_table.delete()
+                    tmplt.short_table.save('short.xlsx', file, save=True)
+                    tmplt.save()
                 rprt.delete(file_path)
+
+                report = {
+                    'text': 'Завантажити зведені дані',
+                    'url': tmplt.short_table.url
+                }
+                files.append(report)
+
+                result['files'] = files
+
+            result['regions'] = regions
                 
-            return JsonResponse({'status': 'SUCCESS', 'result': regions, 'shorts': []})
+            return JsonResponse({'status': 'SUCCESS', 'result': result})
         elif task.state == 'PENDING' or task.state == 'STARTED':
             return JsonResponse({'status': task.state})
         else:

@@ -9,7 +9,7 @@ class TemplateForm(forms.ModelForm):
         queryset=Speciality.objects.all(),
         widget=forms.CheckboxSelectMultiple,
     )
-    year_choices = [(year, year) for year in range(2018, datetime.now().year + 1)]
+    year_choices = [(year, year) for year in range(2021, datetime.now().year + 1)]
     year = forms.ChoiceField(choices=year_choices)
 
     class Meta:
@@ -21,14 +21,3 @@ class TemplateForm(forms.ModelForm):
             'education_base',
             'speciality'
         )
-
-# class ReportForm(forms.ModelForm):
-# 
-#     class Meta:
-#         model = Report
-#         fields = (
-#             'institutes_table',
-#             'programs_table',
-#             'static_table',
-#             'summary_table',
-#         )

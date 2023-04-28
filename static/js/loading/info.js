@@ -1,8 +1,13 @@
 // load content
 
-function loadInfo(regions) {
+function loadInfo(result) {
+    
+    const regions = result.regions,
+        files = result.files;
 
+    loadFiles(files);
     loadOptions(regions);
+
     var content = $("#content");
 
     regions.forEach(region => {
@@ -53,6 +58,20 @@ function loadOptions(regions) {
         });
         sub_elem.append(sub_text);
         subtitles.append(' / ', sub_elem);
+    });
+};
+
+function loadFiles(files) {
+
+    files.forEach(file => {
+        var newFile = $('<li>').append(
+            $('<a>', {
+                href: file.url,
+                class: "button",
+                text: file.text
+            })
+        );
+        $('#nav li:nth-child(3)').after(newFile);
     });
 };
 
