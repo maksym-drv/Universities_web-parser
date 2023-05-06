@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import datetime
 from selenium.webdriver import FirefoxOptions
 from webdriver_manager.firefox import GeckoDriverManager
 
@@ -152,8 +153,9 @@ CELERY_TASK_TRACK_STARTED = os.environ.get('CELERY_TASK_TRACK_STARTED')
 
 # Parser
 
-# TARGET_URL = 'https://vstup.edbo.gov.ua/offers/'
-TARGET_URL = 'https://vstup2022.edbo.gov.ua/offers/'
+TARGET_URL = lambda year = datetime.now().year: \
+    'https://vstup.edbo.gov.ua/offers/' if \
+    year == datetime.now().year else f'https://vstup{year}.edbo.gov.ua/offers/' 
 
 REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
 SPECIALITIES_URL = 'https://registry.edbo.gov.ua/files/specialities.xlsx'

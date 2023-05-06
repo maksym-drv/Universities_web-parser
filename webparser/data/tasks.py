@@ -9,13 +9,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 @shared_task(name='info')
 def info_task(specialities: list,
-                unis: list,
-                qualification: str,
-                education_base: str) -> list:
+            unis: list,
+            year: int,
+            qualification: str,
+            education_base: str) -> list:
 
     scraper = Scraper(
         unis = unis,
-        url = settings.TARGET_URL,
+        url = settings.TARGET_URL(year),
         executable_path = settings.EXECUTABLE_PATH,
         firefox_options = settings.FIREFOX_OPTIONS,
         qualification = qualification,

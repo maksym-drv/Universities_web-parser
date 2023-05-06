@@ -35,7 +35,7 @@ class Parser:
         url = get(self.url, params=self.options).url
         driver.get(url)
         
-        wait = WebDriverWait(driver, 200)
+        wait = WebDriverWait(driver, 10)
         wait.until(ec.visibility_of_element_located((By.CLASS_NAME, self.university_class)))
 
         unis = driver.find_element(by=By.ID, value = self.university_id)

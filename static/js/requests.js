@@ -17,11 +17,12 @@ function checkTaskStatus(url, csrftoken,
           checkTaskStatus(url, csrftoken, successAction, request_data);
         }, 1000);
       } else {
+        alert('Something went wrong :(\nPlease try again later.');
         console.log('The task failed.');
       }
     },
     error: function () {
-      console.log('An error occurred while checking the task status.');
+      alert('Something went wrong :(\nPlease check your settings.');
     }
   });
 }

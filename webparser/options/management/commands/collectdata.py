@@ -11,7 +11,7 @@ class Command(BaseCommand):
         
         try:
             regions = Scraper.get_table(settings.REGIONS_URL)
-            specialities = Scraper.get_page(settings.TARGET_URL)
+            specialities = Scraper.get_page(settings.TARGET_URL())
         except URLError:
             raise CommandError('Cannot connect to the server.')
         

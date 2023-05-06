@@ -1,7 +1,8 @@
 // load content
 
-function loadRegions(regions) {
+function loadRegions(result) {
 
+    const regions = result.regions;
     var content = $("#regions");
 
     regions.forEach(region => {

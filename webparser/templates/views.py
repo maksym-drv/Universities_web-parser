@@ -19,6 +19,7 @@ class InfoTemplateView(LoginRequiredMixin, TemplateView):
         task = info_task.delay(
             specialities = [speciality.registry_id for speciality in template.speciality.all()],
             unis = list(template.university.values_list('registry_id', flat=True)),
+            year = template.year,
             qualification = template.qualification.registry_id,
             education_base = template.education_base.registry_id
         )
