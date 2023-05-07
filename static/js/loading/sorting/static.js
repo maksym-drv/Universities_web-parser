@@ -21,15 +21,16 @@ function loadUni(uni) {
     });
     var firstRow = $("<tr>");
 
-    var rowName = $("<th>", { text: "Name" });
-    var rowSpeciality = $("<th>", { text: "Speciality" });
-    var rowForm = $("<th>", { text: "Form" });
-    var rowApps = $("<th>", { text: "Applications" });
-    var rowBudget = $("<th>", { text: "Enrolled (Budget)" });
-    var rowContract = $("<th>", { text: "Enrolled (Contract)" });
-    var rowPrice = $("<th>", { text: "Price" });
-    firstRow.append(rowName, rowSpeciality, rowForm,
-        rowApps, rowBudget, rowContract, rowPrice);
+    var rowName = $("<th>", { text: "Назва пропозиції" });
+    var rowSpeciality = $("<th>", { text: "Спеціальність" });
+    var rowProgram = $("<th>", { text: "Освітня програма" });
+    var rowForm = $("<th>", { text: "Форма навчання" });
+    var rowApps = $("<th>", { text: "Кількість заяв" });
+    var rowBudget = $("<th>", { text: "Зараховано (бюджет)" });
+    var rowContract = $("<th>", { text: "Зараховано (контракт)" });
+    var rowPrice = $("<th>", { text: "Вартість навчання" });
+    firstRow.append(rowName, rowSpeciality, rowProgram,
+        rowForm, rowApps, rowBudget, rowContract, rowPrice);
 
     table.append(tableCol, firstRow)
 
@@ -51,13 +52,14 @@ function loadOffer(offer) {
 
     var rowName = $("<td>", { text: offer.name });
     var rowSpeciality = $("<td>", { text: offer.id });
+    var rowProgram = $("<td>", { text: offer.program });
     var rowForm = $("<td>", { text: offer.form });
     var rowApps = $("<td>", { text: offer.apps });
     var rowBudget = $("<td>", { text: offer.ob });
     var rowContract = $("<td>", { text: offer.oc });
     var rowPrice = $("<td>", { text: offer.price });
 
-    row.append(rowName, rowSpeciality, rowForm,
+    row.append(rowName, rowSpeciality, rowProgram, rowForm,
         rowApps, rowBudget, rowContract, rowPrice);
 
     return row;

@@ -32,7 +32,7 @@
             <li>Спеціальності:
                 <ol>
                   {% for speciality in template.speciality.all %}
-                    <li><b>{{ speciality.name }}</b></li></li>
+                    <li><b>{{ speciality.name }}</b></li>
                   {% endfor %}
                 </ol>
             </li>
@@ -69,10 +69,10 @@
 
       <div class="templatesItem__buttons">
         <div class="templatesItem__button">
-          <a href="{% url 'templates_info' template.id %}" class="button"><i class="fa-solid fa-database"></i> Data</a>
+          <a href="{% url 'templates_info' template.id %}" class="button"><i class="fa-solid fa-database"></i> Отримати дані</a>
         </div>
         <div class="templatesItem__button">
-          <a href="{% url 'templates_edit' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+          <a href="{% url 'templates_edit' template.id %}" class="button"><i class="fa-solid fa-pen-to-square"></i> Редагувати</a>
         </div>
       </div>
     </div><!-- /.templatesItem -->

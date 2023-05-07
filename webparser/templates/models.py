@@ -6,7 +6,7 @@ from webparser.options.models import Qualification, \
 
 class Template(models.Model):
 
-    name            = models.CharField('Name', max_length=200)
+    name            = models.CharField(max_length=200)
     year            = models.IntegerField(validators=[
                         MinValueValidator(2021), ])
     qualification   = models.ForeignKey(Qualification, on_delete=models.CASCADE)
@@ -14,9 +14,9 @@ class Template(models.Model):
     speciality      = models.ManyToManyField(Speciality)
     university      = models.ManyToManyField(University)
     
-    short_table     = models.FileField(null = True)
-    static_table    = models.FileField(null = True)
-    programs_table  = models.FileField(null = True)
+    short_table     = models.FileField(null = True, blank=False)
+    static_table    = models.FileField(null = True, blank=False)
+    programs_table  = models.FileField(null = True, blank=False)
 
     user            = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 

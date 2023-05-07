@@ -10,15 +10,15 @@
 
 <div class="container">
   <div class="form__box">
-    <h3>Your profile:</h3>
+    <h3>Ваш профіль:</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
       {{ form.as_p }}
 
       <div class="form__buttons">
-        <input type="submit" value="Save changes">
-        <a href="{% url 'change_password' %}" class="button">Change password</a>
+        <input type="submit" value="Зберегти зміни">
+        <a href="{% url 'change_password' %}" class="button">Змінити пароль</a>
       </div>
       
     </form>

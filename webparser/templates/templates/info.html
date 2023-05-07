@@ -4,7 +4,21 @@
 
 <div class="container container__lg">
 
-  <h3 class="template__name">{{ template.name }}</h3>
+  <div class="template__title">
+    <h3>{{ template.name }}</h3>
+    <ul>
+      <li><b>Рік: </b>{{ template.year }}</li>
+      <li><b>Освітній ступінь: </b>{{ template.qualification }}</li>
+      <li><b>Основа вступу: </b>{{ template.education_base }}</li>
+      <li><b>Спеціальності:</b>
+        <ol>
+          {% for speciality in template.speciality.all %}
+            <li>{{ speciality.name }}</li>
+          {% endfor %}
+        </ol>
+      </li>
+    </ul>
+  </div>
 
   <div class="loader">
     <div id="loader"></div>
@@ -32,7 +46,7 @@
     <nav class="subtitles__options">
       <ol id="subtitles">
         <li class="subtitles__option" data-section="0">
-          <a href="#">Всі регіони</a>
+          <a href="#">Всі області</a>
         </li>
       </ol>
     </nav>
@@ -46,7 +60,7 @@
 {% csrf_token %}
 <script>
   $(document).ready(function () {
-    $(".template__name").hide();
+    $(".template__title").hide();
     $(".templates__subtitles").hide();
     checkTaskStatus(
       "{% url 'check_task' task %}", 

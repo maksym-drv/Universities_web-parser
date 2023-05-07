@@ -23,7 +23,7 @@ class TaskView(View):
                 rprt = Report(regions)
                 
                 # static data
-                file_path = rprt.static_data('static', task.id)
+                file_path = rprt.static_data('static', task.id, 'I')
                 with open(file_path, 'rb') as f:
                     file = File(f)
                     tmplt.static_table.delete()
@@ -38,7 +38,7 @@ class TaskView(View):
                 files.append(report)
 
                 # short data
-                file_path = rprt.short_data('short', task.id)
+                file_path = rprt.short_data('short', task.id, 'H')
                 with open(file_path, 'rb') as f:
                     file = File(f)
                     tmplt.short_table.delete()

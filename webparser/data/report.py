@@ -8,7 +8,7 @@ class Report:
         self.regions = regions
     
     def get_file(sort_table):
-        def wrapper(self, name: str, id: str, last_column: str = 'H') -> str:
+        def wrapper(self, name: str, id: str, last_column) -> str:
 
             regions = self.regions
             file_name = f'{name}_{id}.xlsx'
@@ -47,9 +47,9 @@ class Report:
         region = {}
 
         for _name in 'Назва закладу освіти', 'Назва пропозиції', \
-            'Спеціальність', 'Форма навчання', 'Кількість заяв', \
-            'Зараховано (бюджет)', 'Зараховано (контракт)', \
-            'Вартість навчання':
+            'Спеціальність', 'Освітня програма', 'Форма навчання', \
+            'Кількість заяв', 'Зараховано (бюджет)', \
+            'Зараховано (контракт)', 'Вартість навчання':
             region[_name] = []
 
         for uni in region_static:
@@ -65,6 +65,7 @@ class Report:
 
                 region['Назва пропозиції'].append(offer['name'])
                 region['Спеціальність'].append(offer['id'])
+                region['Освітня програма'].append(offer['program'])
                 region['Форма навчання'].append(offer['form'])
                 region['Кількість заяв'].append(offer['apps'])
                 region['Зараховано (бюджет)'].append(offer['ob'])

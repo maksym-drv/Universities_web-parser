@@ -12,11 +12,10 @@ class ProfileView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     form_class = UserProfileForm
     template_name = 'profile.html'
     success_url = reverse_lazy('profile')
-    success_message = 'Data was successfully changed'
+    success_message = 'Дані успішно змінено'
 
     def form_valid(self, form: UserProfileForm):
         form.save()
-        #messages.success(self.request, 'Data was successfully changed')
         return super().form_valid(form)
 
     def get_form_kwargs(self):
@@ -50,7 +49,7 @@ class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     template_name = 'change_password.html'
     form_class = ChangePasswordForm
     success_url = reverse_lazy('profile')
-    success_message = 'Password changed successfully'
+    success_message = 'Пароль успішно змінено'
 
     def form_valid(self, form: ChangePasswordForm):
         
@@ -60,10 +59,10 @@ class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, FormView):
         confirm_new_password = form.cleaned_data.get('confirm_new_password')
 
         if not user.check_password(current_password):
-            form.add_error(None, 'Incorrect current password!')
+            form.add_error(None, 'Невірний поточний пароль!')
             return self.form_invalid(form)
         elif new_password != confirm_new_password:
-            form.add_error('new_password', 'Passwords do not match!')
+            form.add_error('new_password', 'Паролі не збігаються!')
             return self.form_invalid(form)
         else:
             user.set_password(new_password)

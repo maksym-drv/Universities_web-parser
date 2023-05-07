@@ -44,7 +44,7 @@ function loadInfo(result) {
         };
     });
 
-    $(".template__name").show();
+    $(".template__title").show();
     $(".templates__subtitles").css("border-bottom", "1px solid black");
     $(".templates__subtitles").show();
     $(".shortTable").hide();

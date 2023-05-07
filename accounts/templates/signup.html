@@ -4,15 +4,15 @@
 
 <div class="container">
   <div class="form__box">
-    <h3>Sign up</h3>
+    <h3>Реєстрація</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
       {{ form.as_p }}
 
       <div class="form__buttons">
-        <input type="submit" value="Sign up">
-        <a href="{% url 'profile' %}" class="button">Login</a>
+        <input type="submit" value="Зареєструватися">
+        <a href="{% url 'profile' %}" class="button">Вхід в систему</a>
       </div>
       
     </form>

@@ -14,16 +14,27 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('first_name', 'last_name', 'email')
-        
+        labels = {
+            'first_name': "Ім'я",
+            'last_name': 'Прізвище',
+            'email': 'Електронна пошта',
+        }
 
 class UserProfileForm(forms.ModelForm):
     
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
-
+        labels = {
+            'first_name': "Ім'я",
+            'last_name': 'Прізвище',
+            'email': 'Електронна пошта',
+        }
 
 class ChangePasswordForm(forms.Form):
-    current_password = forms.CharField(widget=forms.PasswordInput)
-    new_password = forms.CharField(widget=forms.PasswordInput)
-    confirm_new_password = forms.CharField(widget=forms.PasswordInput)
+    current_password = forms.CharField(widget=forms.PasswordInput,
+                                       label='Поточний пароль')
+    new_password = forms.CharField(widget=forms.PasswordInput,
+                                   label='Новий пароль')
+    confirm_new_password = forms.CharField(widget=forms.PasswordInput,
+                                           label='Підтвердити новий пароль')

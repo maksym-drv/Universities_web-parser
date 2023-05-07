@@ -9,7 +9,7 @@
   </div>
 
   <div class="form__box">
-    <h3>Edit the template</h3>
+    <h3>Редагувати шаблон</h3>
     <form method="post" enctype="multipart/form-data">
 
       {% csrf_token %}
@@ -42,7 +42,7 @@
         <label>Обрати університети:</label>
 
         <div class="form__regions form__checkbox">
-          <label for="option"> All Regions </label>
+          <label for="option"> Всі області </label>
           <input type="checkbox" id="allRegions">
         </div>
 
@@ -50,9 +50,9 @@
       </div>
 
       <div class="form__buttons">
-        <input type="submit" value="Save changes">
-        <a href="{% url 'templates' %}" class="button">Return</a>
-        <a href="{% url 'templates_delete' form.instance.pk %}" class="button button__red">Delete</a>
+        <input type="submit" value="Зберегти зміни">
+        <a href="{% url 'templates' %}" class="button">Повернутися</a>
+        <a href="{% url 'templates_delete' form.instance.pk %}" class="button button__red">Видалити</a>
       </div>
       
     </form>

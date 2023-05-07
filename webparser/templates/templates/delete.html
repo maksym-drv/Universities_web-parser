@@ -4,17 +4,17 @@
 
 <div class="container">
   <div class="form__box">
-    <h3>Delete the template</h3>
+    <h3>Видалити шаблон</h3>
     <form method="post" enctype="multipart/form-data">
 
-      <p>Are you sure you want to delete template "{{ object }}"?</p>
+      <p>Ви впевнені, що хочете видалити шаблон "{{ object }}"?</p>
 
       {% csrf_token %}
       {{ form }}
 
       <div class="form__buttons">
-        <input type="submit" value="Delete">
-        <a href="{% url 'templates_edit' object.id %}" class="button">Cancel</a>
+        <input type="submit" value="Видалити">
+        <a href="{% url 'templates_edit' object.id %}" class="button">Скасувати</a>
       </div>
       
     </form>
