@@ -32,9 +32,15 @@ function loadInfo(result) {
         if (value == "unis") {
             $(".uniTable").show()
             $(".shortTable").hide()
+            $(".programsTable").hide()
         } else if (value == "short") {
             $(".uniTable").hide()
             $(".shortTable").show()
+            $(".programsTable").hide()
+        } else if (value == "programs") {
+            $(".uniTable").hide()
+            $(".shortTable").hide()
+            $(".programsTable").show()
         };
     });
 
@@ -42,6 +48,7 @@ function loadInfo(result) {
     $(".templates__subtitles").css("border-bottom", "1px solid black");
     $(".templates__subtitles").show();
     $(".shortTable").hide();
+    $(".programsTable").hide()
     $("#loader").hide();
 };
 
@@ -93,6 +100,11 @@ function loadRegion(region) {
     region.short.forEach(spec => {
         var newShortTable = getShortTable(spec);
         newRegion.append(newShortTable);
+    });
+
+    region.static.forEach(uni => {
+        var newPrograms = getPrograms(uni);
+        newRegion.append(newPrograms);
     });
 
     return newRegion;

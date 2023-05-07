@@ -3,7 +3,7 @@ from django.core.files import File
 from django.http import JsonResponse
 from celery.result import AsyncResult
 from webparser.templates.models import Template
-from .report import Report as rprt
+from .report import Report
 
 class TaskView(View):
 
@@ -20,8 +20,10 @@ class TaskView(View):
                 and request.POST.get('template'):
 
                 tmplt = Template.objects.get(id = request.POST['template'])
-            
-                file_path = rprt.static_data(regions, 'static', task.id)
+                rprt = Report(regions)
+                
+                # static data
+                file_path = rprt.static_data('static', task.id)
                 with open(file_path, 'rb') as f:
                     file = File(f)
                     tmplt.static_table.delete()
@@ -35,7 +37,8 @@ class TaskView(View):
                 }
                 files.append(report)
 
-                file_path = rprt.short_data(regions, 'short', task.id)
+                # short data
+                file_path = rprt.short_data('short', task.id)
                 with open(file_path, 'rb') as f:
                     file = File(f)
                     tmplt.short_table.delete()
@@ -46,6 +49,21 @@ class TaskView(View):
                 report = {
                     'text': 'Завантажити зведені дані',
                     'url': tmplt.short_table.url
+                }
+                files.append(report)
+
+                # programs data
+                file_path = rprt.programs_data('static', task.id, 'B')
+                with open(file_path, 'rb') as f:
+                    file = File(f)
+                    tmplt.programs_table.delete()
+                    tmplt.programs_table.save('programs.xlsx', file, save=True)
+                    tmplt.save()
+                rprt.delete(file_path)
+
+                report = {
+                    'text': 'Завантажити освітні програми',
+                    'url': tmplt.programs_table.url
                 }
                 files.append(report)
 

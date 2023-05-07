@@ -4,6 +4,7 @@ class Sorter:
 
     def __init__(self):
         self.short_tables = []
+        self.programs_table = []
 
     def __add_short_table(self, offer: dict) -> int:
 
@@ -92,6 +93,9 @@ class Sorter:
                 False):
 
                 self.__update_short_table(uni['offers'])
+                
+                programs = set([offer['program'] \
+                            for offer in uni['offers']])
                         
                 uni_index = next(
                     (index for (index, _uni) in enumerate(static_tables)
@@ -99,12 +103,15 @@ class Sorter:
 
                 if isinstance(uni_index, int):
                     static_tables[uni_index]['offers'] += uni['offers']
+                    static_tables[uni_index]['programs'] += list(programs)
                 else:
                     _uni = {}
                     _uni['id'] = uni['id']
                     _uni['name'] = uni['name']
                     _uni['offers'] = []
                     _uni['offers'] += uni['offers']
+                    _uni['programs'] = []
+                    _uni['programs'] += list(programs)
                     static_tables.append(_uni)
 
         return static_tables

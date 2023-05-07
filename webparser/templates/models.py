@@ -16,6 +16,7 @@ class Template(models.Model):
     
     short_table     = models.FileField(null = True)
     static_table    = models.FileField(null = True)
+    programs_table  = models.FileField(null = True)
 
     user            = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 

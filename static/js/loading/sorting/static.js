@@ -1,7 +1,8 @@
 
 function loadUni(uni) {
-    var newUniItem = $("<div>", { class: "templatesItem uniTable" });
-    var newUniObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" });
+    var newUniItem = $("<div>", { class: "templatesItem uniTable" }),
+        newUniObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" }),
+        newUniText = $("<div>", { class: "templatesItem__desc__text" });
 
     var newUniName =
         `<div class="templatesItem__desc__name">
@@ -11,8 +12,6 @@ function loadUni(uni) {
       <span>${uni.name}</span>
     </div>`
     newUniObj.html(newUniName);
-
-    var newUniText = $("<div>", { class: "templatesItem__desc__text" });
 
     var table = $("<table>");
 

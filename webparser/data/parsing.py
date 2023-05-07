@@ -3,6 +3,7 @@ from pandas import read_excel
 from selenium.webdriver import Firefox, FirefoxOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as ec
 
 class Parser:
@@ -35,8 +36,12 @@ class Parser:
         url = get(self.url, params=self.options).url
         driver.get(url)
         
-        wait = WebDriverWait(driver, 10)
-        wait.until(ec.visibility_of_element_located((By.CLASS_NAME, self.university_class)))
+        try:
+            wait = WebDriverWait(driver, 10)
+            wait.until(ec.visibility_of_element_located((By.CLASS_NAME, self.university_class)))
+        except TimeoutException:
+            print(f'\nIm finish with error!\n')
+            return None
 
         unis = driver.find_element(by=By.ID, value = self.university_id)
 

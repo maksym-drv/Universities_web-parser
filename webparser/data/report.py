@@ -3,10 +3,14 @@ import pandas as pd
 from django.conf import settings
 
 class Report:
+
+    def __init__(self, regions: list) -> None:
+        self.regions = regions
     
     def get_file(sort_table):
-        def wrapper(regions: list, name: str, id: str) -> str:
+        def wrapper(self, name: str, id: str, last_column: str = 'H') -> str:
 
+            regions = self.regions
             file_name = f'{name}_{id}.xlsx'
             file_path = path.join(settings.MEDIA_ROOT, file_name)
             writer = pd.ExcelWriter(file_path)
@@ -16,14 +20,14 @@ class Report:
 
             for region in regions:
 
-                _table = sort_table(region[name])        
+                _table = sort_table(self, region[name])        
 
                 df = pd.DataFrame(_table)
 
                 df.to_excel(writer, index=False, 
                     sheet_name = region['name'])
                 
-                size = f'A2:H{df.shape[0] + 1}'
+                size = f'A2:{last_column}{df.shape[0] + 1}'
                 worksheet = writer.sheets[region['name']]
 
                 worksheet.conditional_format(size, {'type': 'blanks',
@@ -38,8 +42,7 @@ class Report:
         return wrapper
     
     @get_file
-    @staticmethod
-    def static_data(region_static: list):
+    def static_data(self, region_static: list):
 
         region = {}
 
@@ -74,8 +77,7 @@ class Report:
         return region
     
     @get_file
-    @staticmethod
-    def short_data(region_short: list):
+    def short_data(self, region_short: list):
 
         region = {}
 
@@ -123,6 +125,28 @@ class Report:
                 _data['max_parttime'],
                 '', ''
             ])
+
+        return region
+    
+    @get_file
+    def programs_data(self, region_static: list):
+
+        region = {}
+
+        for _name in 'Назва закладу освіти', 'Освітня програма':
+            region[_name] = []
+
+        for uni in region_static:
+            uni: dict
+
+            region["Назва закладу освіти"].append(uni['name'])
+            region["Назва закладу освіти"].extend(
+                ['' for _programs in uni['programs'][1:]]
+            )
+            region["Освітня програма"].extend(uni['programs'])
+
+            for _name in region.keys():
+                region[_name].append('')
 
         return region
         

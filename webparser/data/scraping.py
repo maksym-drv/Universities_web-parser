@@ -12,6 +12,11 @@ class Scraper(Parser):
 
     def get_uni_data(self, raw_data: str) -> list:
 
+        data = []
+
+        if not raw_data:
+            return data
+
         def get_offer_data(soup: BeautifulSoup, class_name: str) -> str:
             offer = soup.find('dl', {'class': class_name})
             if not offer: return
@@ -27,8 +32,6 @@ class Scraper(Parser):
         soup = BeautifulSoup(raw_data, 'html.parser')
 
         unis_soup = soup.find('div', id='universities')
-
-        data = []
 
         for uni in unis_soup.find_all('div', {'class': 'university'}):
 
@@ -56,6 +59,8 @@ class Scraper(Parser):
                                     ).text
 
                 _offer['name'] = offer_name[1].find('dd').text
+                _offer['program'] = \
+                    get_offer_data(offer, 'row offer-study-programs')
                 
                 form = get_offer_data(offer, 'row offer-education-form-name')
                 if form: 

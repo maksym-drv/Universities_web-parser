@@ -1,9 +1,9 @@
 
 function getShortTable(spec) {
 
-    var shortTable = $("<div>", { class: "templatesItem shortTable" });
-    var shortTableObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" });
-    var newTableText = $("<div>", { class: "templatesItem__desc__text" });
+    var shortTable = $("<div>", { class: "templatesItem shortTable" }),
+        shortTableObj = $("<div>", { class: "templatesItem__desc templatesItem__desc--table" }),
+        newTableText = $("<div>", { class: "templatesItem__desc__text" });
 
     var table = $("<table>");
     var tableCol = $("<col>", {
