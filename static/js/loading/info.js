@@ -70,16 +70,30 @@ function loadOptions(regions) {
 
 function loadFiles(files) {
 
+    filesButton = $("<li>", {
+        class: "files--dropdown"}
+    ).append(
+        $("<a>", {
+            href: "#",
+            class: "button dropbtn",
+            text: "Завантажити"
+        })
+    );
+    filesContent = $("<div>", {
+        class: "files--content",
+    });
+
     files.forEach(file => {
-        var newFile = $('<li>').append(
-            $('<a>', {
+        filesContent.append(
+            $("<a>", {
                 href: file.url,
-                class: "button",
                 text: file.text
             })
         );
-        $('#nav li:nth-child(3)').after(newFile);
     });
+
+    filesButton.append(filesContent);
+    $('#nav li:nth-child(3)').after(filesButton);
 };
 
 function loadRegion(region) {

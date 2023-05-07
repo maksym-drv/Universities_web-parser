@@ -850,3 +850,36 @@ input[type=submit]:hover {
   background-color: white;
   color: black;
 }
+
+.dropbtn {
+  position: relative;
+}
+
+.files--content {
+  top: 100%;
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.files--dropdown {
+  position: relative;
+}
+
+.files--dropdown:hover .files--content {
+  display: block;
+}
+
+.files--content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.files--content a:hover {
+  background-color: #ddd;
+}

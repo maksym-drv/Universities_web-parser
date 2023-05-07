@@ -32,7 +32,7 @@ class TaskView(View):
                 rprt.delete(file_path)
 
                 report = {
-                    'text': 'Завантажити статистичні дані',
+                    'text': 'Статистичні дані',
                     'url': tmplt.static_table.url
                 }
                 files.append(report)
@@ -47,7 +47,7 @@ class TaskView(View):
                 rprt.delete(file_path)
 
                 report = {
-                    'text': 'Завантажити зведені дані',
+                    'text': 'Зведені дані',
                     'url': tmplt.short_table.url
                 }
                 files.append(report)
@@ -62,7 +62,7 @@ class TaskView(View):
                 rprt.delete(file_path)
 
                 report = {
-                    'text': 'Завантажити освітні програми',
+                    'text': 'Освітні програми',
                     'url': tmplt.programs_table.url
                 }
                 files.append(report)
