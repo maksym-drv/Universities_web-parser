@@ -1,11 +1,11 @@
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, FormView, DeleteView, TemplateView
-
-from .models import Template
-from .forms import TemplateForm
 from webparser.data.tasks import info_task, regions_task
 from webparser.options.models import University
+from django.views.generic import ListView, \
+    FormView, DeleteView, TemplateView
+from django.urls import reverse_lazy
+from .forms import TemplateForm
+from .models import Template
 
 class InfoTemplateView(LoginRequiredMixin, TemplateView):
 

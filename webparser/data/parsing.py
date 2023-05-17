@@ -1,73 +1,133 @@
-from requests import get
-from pandas import read_excel
-from selenium.webdriver import Firefox, FirefoxOptions
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support import expected_conditions as ec
+from webparser.options.models import Speciality
 
 class Parser:
 
-    university_id       = 'universities'
-    university_class    = 'university'
+    def __init__(self):
+        self.short_tables = []
+        self.programs_table = []
 
-    def __init__(self, url: str, executable_path: str,
-                firefox_options: FirefoxOptions, 
-                qualification: str, education_base: str) -> None:
+    def __add_short_table(self, offer: dict) -> int:
 
-        self.url = url
-        self.executable_path = executable_path
-        self.firefox_options = firefox_options
+        _spec = {}
+        _spec['id'] = offer['id']
+        _spec['name'] = Speciality.objects.get(
+            registry_id = offer['id']
+        ).name
 
-        self.options = {
-            'qualification': qualification,
-            'education_base': education_base
-        }
+        for _name in ('fulltime_apps', 'parttime_apps', 'apps', 
+                    'fulltime_budget', 'fulltime_contract', 'budget',
+                    'parttime_budget', 'parttime_contract', 'contract',
+                    'enrolled', 'max_fulltime', 'min_fulltime',
+                    'max_parttime', 'min_parttime', ):
+            _spec[_name] = 0
 
-    def get_raw_unis(self, speciality: str) -> str:
+        self.short_tables.append(_spec)
+        return self.short_tables.index(_spec)
 
-        driver = Firefox(
-            executable_path = self.executable_path, 
-            options         = self.firefox_options,
-        )
+    def __update_short_table(self, offers: list):
 
-        self.options['speciality'] = speciality
+        for offer in offers:
+            offer: dict
 
-        url = get(self.url, params=self.options).url
-        driver.get(url)
+            spec_index = next(
+            (index for (index, _spec) in enumerate(self.short_tables)
+            if _spec['id'] == offer['id']), None)
+
+            if not isinstance(spec_index, int):
+                spec_index = self.__add_short_table(offer)
+
+            spec = self.short_tables[spec_index]
+
+            spec['fulltime_apps'] += offer['apps'] if \
+                offer['form'] == 'Денна' else 0
+            spec['parttime_apps'] += offer['apps'] if \
+                offer['form'] == 'Заочна' else 0
+            spec['fulltime_budget'] += offer['ob'] if \
+                offer['form'] == 'Денна' else 0
+            spec['fulltime_contract'] += offer['oc'] if \
+                offer['form'] == 'Денна' else 0
+            spec['parttime_budget'] += offer['ob'] if \
+                offer['form'] == 'Заочна' else 0
+            spec['parttime_contract'] += offer['oc'] if \
+                offer['form'] == 'Заочна' else 0
+            
+            spec['apps'] = spec['fulltime_apps'] + spec['parttime_apps']
+            spec['budget'] = spec['fulltime_budget'] + spec['parttime_budget']
+            spec['contract'] = spec['fulltime_contract'] + spec['parttime_contract']
+            spec['fulltime'] = spec['fulltime_budget'] + spec['fulltime_contract']
+            spec['parttime'] = spec['parttime_budget'] + spec['parttime_contract']
+            spec['enrolled'] = spec['budget'] + spec['contract']
+
+            _price = (lambda _name: offer[_name] if isinstance(
+                offer.get(_name), int) else 0)('price')
+
+            spec['max_fulltime'] = offer['price'] if \
+                offer['form'] == 'Денна' and \
+                _price > int(spec['max_fulltime']) \
+                    else int(spec['max_fulltime'])
+            
+            spec['max_parttime'] = offer['price'] if \
+                offer['form'] == 'Заочна' and \
+                _price > int(spec['max_parttime']) \
+                    else int(spec['max_parttime'])
+            
+            spec['min_fulltime'] = offer['price'] if \
+                offer['form'] == 'Денна' and \
+                _price < int(spec['min_fulltime']) \
+                or spec['min_fulltime'] == 0 else int(spec['min_fulltime'])
+
+            spec['min_parttime'] = offer['price'] if \
+                offer['form'] == 'Заочна' and \
+                _price < int(spec['min_parttime']) \
+                or spec['min_parttime'] == 0 else int(spec['min_parttime'])
+
+    def get_static_table(self, unis: list, 
+                   region_unis: list) -> list:
         
-        try:
-            wait = WebDriverWait(driver, 10)
-            wait.until(ec.visibility_of_element_located((By.CLASS_NAME, self.university_class)))
-        except TimeoutException:
-            print(f'\nIm finish with error!\n')
-            return None
+        static_tables = []
 
-        unis = driver.find_element(by=By.ID, value = self.university_id)
+        for uni in unis:
 
-        for uni in unis.find_elements(by=By.CLASS_NAME, value = self.university_class):
-            uni.click()
+            if next((True for region_uni in region_unis 
+                if region_uni['university_id'] == uni['id']), 
+                False):
 
-        raw_page = driver.page_source
+                self.__update_short_table(uni['offers'])
+                
+                programs = set([offer['program'] \
+                            for offer in uni['offers']])
+                        
+                uni_index = next(
+                    (index for (index, _uni) in enumerate(static_tables)
+                    if _uni['id'] == uni['id']), None)
 
-        print(f'\nIm finish!\n')
+                if isinstance(uni_index, int):
+                    static_tables[uni_index]['offers'] += uni['offers']
+                    static_tables[uni_index]['programs'] += list(programs)
+                else:
+                    _uni = {}
+                    _uni['id'] = uni['id']
+                    _uni['name'] = uni['name']
+                    _uni['offers'] = []
+                    _uni['offers'] += uni['offers']
+                    _uni['programs'] = []
+                    _uni['programs'] += list(programs)
+                    static_tables.append(_uni)
 
-        driver.quit()
-
-        return raw_page
+        return static_tables
     
     @staticmethod
-    def get_table(url):
-        return read_excel(url, dtype='object')
-    
-    @staticmethod
-    def get_page(url: str, params: dict = {}):
-        response = get(url, params)
-        return response.text
-    
-    @staticmethod
-    def get_json(url: str, params: dict = {}):
-        response = get(url, params)
-        try: response = response.json()
-        except: response = []
-        return response
+    def get_region_options(raw_regions) -> list:
+
+        region_id = 'Код регіону'
+        region_name = 'Назва регіону'
+        data = []
+
+        for index, region in enumerate(raw_regions[region_id]):
+
+            data.append({
+                'name': raw_regions[region_name][index],
+                'registry_id': raw_regions[region_id][index]
+            })
+        
+        return data

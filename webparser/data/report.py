@@ -1,5 +1,5 @@
-from os import path, remove
 import pandas as pd
+from os import path, remove
 from django.conf import settings
 
 class Report:

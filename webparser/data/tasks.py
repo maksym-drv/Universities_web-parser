@@ -1,6 +1,6 @@
 #from multiprocessing.dummy import Pool
 #from threading import Thread
-from .sorting import Sorter
+from .parsing import Parser
 from .scraping import Scraper
 from celery import shared_task
 from django.conf import settings
@@ -44,17 +44,17 @@ def info_task(specialities: list,
 
         params: dict = settings.DEFAULT_PARAMS.copy()
         params['lc'] = region.registry_id
-        region_unis: list = Scraper.get_json(
+        region_unis: list = Scraper.get_abstract_json(
             settings.UNIVERSITIES_URL, 
             params=params
         )
 
-        sort = Sorter()
-        _region['static'] = sort.get_static_table(
+        parser = Parser()
+        _region['static'] = parser.get_static_table(
             unis,
             region_unis
         )
-        _region['short'] = sort.short_tables
+        _region['short'] = parser.short_tables
 
         for uni in region_unis:
             found_unis = [_uni for _uni in unis 
@@ -81,7 +81,7 @@ def regions_task(saved_unis: list = []) -> list:
         params: dict = settings.DEFAULT_PARAMS.copy()
         params['lc'] = region.registry_id
 
-        unis: list = Scraper.get_json(
+        unis: list = Scraper.get_abstract_json(
             settings.UNIVERSITIES_URL, 
             params=params
         )

@@ -1,8 +1,10 @@
+from requests import get
+from pandas import read_excel
 from bs4 import BeautifulSoup
-from .parsing import Parser
+from .unprotection import Unprotector
 from selenium.webdriver import FirefoxOptions
 
-class Scraper(Parser):
+class Scraper(Unprotector):
 
     def __init__(self, url: str, executable_path: str, firefox_options: FirefoxOptions, 
                 qualification: str, education_base: str, unis: list) -> None:
@@ -89,22 +91,6 @@ class Scraper(Parser):
         return data
     
     @staticmethod
-    def get_region_options(raw_regions) -> list:
-
-        region_id = 'Код регіону'
-        region_name = 'Назва регіону'
-        data = []
-
-        for index, region in enumerate(raw_regions[region_id]):
-
-            data.append({
-                'name': raw_regions[region_name][index],
-                'registry_id': raw_regions[region_id][index]
-            })
-        
-        return data
-    
-    @staticmethod
     def get_speciality_options(raw_data: str) -> list:
 
         speciality_id = 'offers-search-speciality'
@@ -128,3 +114,19 @@ class Scraper(Parser):
             })
             
         return data
+    
+    @staticmethod
+    def get_abstract_page(url: str, params: dict = {}):
+        response = get(url, params)
+        return response.text
+    
+    @staticmethod
+    def get_abstract_json(url: str, params: dict = {}):
+        response = get(url, params)
+        try: response = response.json()
+        except: response = []
+        return response
+    
+    @staticmethod
+    def get_abstract_table(url):
+        return read_excel(url, dtype='object')
