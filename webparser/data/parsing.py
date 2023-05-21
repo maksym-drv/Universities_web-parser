@@ -3,8 +3,7 @@ from webparser.options.models import Speciality
 class Parser:
 
     def __init__(self):
-        self.short_tables = []
-        self.programs_table = []
+        self.__short_tables = []
 
     def __add_short_table(self, offer: dict) -> int:
 
@@ -15,14 +14,16 @@ class Parser:
         ).name
 
         for _name in ('fulltime_apps', 'parttime_apps', 'apps', 
-                    'fulltime_budget', 'fulltime_contract', 'budget',
-                    'parttime_budget', 'parttime_contract', 'contract',
-                    'enrolled', 'max_fulltime', 'min_fulltime',
-                    'max_parttime', 'min_parttime', ):
+                    'fulltime_budget', 'fulltime_contract', 
+                    'parttime_budget',  'parttime_contract',
+                    'budget', 'contract', 'enrolled', ):
             _spec[_name] = 0
+        
+        _spec['fulltime_prices'] = []
+        _spec['parttime_prices'] = []
 
-        self.short_tables.append(_spec)
-        return self.short_tables.index(_spec)
+        self.__short_tables.append(_spec)
+        return self.__short_tables.index(_spec)
 
     def __update_short_table(self, offers: list):
 
@@ -30,13 +31,13 @@ class Parser:
             offer: dict
 
             spec_index = next(
-            (index for (index, _spec) in enumerate(self.short_tables)
+            (index for (index, _spec) in enumerate(self.__short_tables)
             if _spec['id'] == offer['id']), None)
 
             if not isinstance(spec_index, int):
                 spec_index = self.__add_short_table(offer)
 
-            spec = self.short_tables[spec_index]
+            spec = self.__short_tables[spec_index]
 
             spec['fulltime_apps'] += offer['apps'] if \
                 offer['form'] == 'Денна' else 0
@@ -59,27 +60,14 @@ class Parser:
             spec['enrolled'] = spec['budget'] + spec['contract']
 
             _price = (lambda _name: offer[_name] if isinstance(
-                offer.get(_name), int) else 0)('price')
+                offer.get(_name), int) else None)('price')
 
-            spec['max_fulltime'] = offer['price'] if \
-                offer['form'] == 'Денна' and \
-                _price > int(spec['max_fulltime']) \
-                    else int(spec['max_fulltime'])
-            
-            spec['max_parttime'] = offer['price'] if \
-                offer['form'] == 'Заочна' and \
-                _price > int(spec['max_parttime']) \
-                    else int(spec['max_parttime'])
-            
-            spec['min_fulltime'] = offer['price'] if \
-                offer['form'] == 'Денна' and \
-                _price < int(spec['min_fulltime']) \
-                or spec['min_fulltime'] == 0 else int(spec['min_fulltime'])
-
-            spec['min_parttime'] = offer['price'] if \
-                offer['form'] == 'Заочна' and \
-                _price < int(spec['min_parttime']) \
-                or spec['min_parttime'] == 0 else int(spec['min_parttime'])
+            if _price:
+                if offer['form'] == 'Денна':
+                    spec['fulltime_prices'].append(_price)
+                elif offer['form'] == 'Заочна':
+                    spec['parttime_prices'].append(_price)
+    
 
     def get_static_table(self, unis: list, 
                    region_unis: list) -> list:
@@ -115,6 +103,28 @@ class Parser:
                     static_tables.append(_uni)
 
         return static_tables
+    
+    @property
+    def short_tables(self):
+
+        def get_value(data: list, func):
+            try:
+                return func(data)
+            except ValueError:
+                return 0
+            
+        for spec in self.__short_tables:
+
+            spec: dict
+            fulltime_prices = spec.pop('fulltime_prices')
+            parttime_prices = spec.pop('parttime_prices')
+            
+            spec['max_fulltime'] = get_value(fulltime_prices, max)
+            spec['max_parttime'] = get_value(parttime_prices, max)
+            spec['min_fulltime'] = get_value(fulltime_prices, min)
+            spec['min_parttime'] = get_value(parttime_prices, min)
+
+        return self.__short_tables
     
     @staticmethod
     def get_region_options(raw_regions) -> list:
