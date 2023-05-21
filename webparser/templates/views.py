@@ -53,8 +53,6 @@ class NewTemplateView(LoginRequiredMixin, FormView):
                 registry_id = uni
             )
             form.instance.university.add(uni)
-        # report = Report(template = form.instance)
-        # report.save()
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):

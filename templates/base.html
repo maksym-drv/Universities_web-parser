@@ -31,6 +31,8 @@
     <header class="header">
       <div class="header__inner">
 
+        {% if user.is_authenticated %}
+
         <!-- .header__box -->
         <div class="header__box">
 
@@ -61,6 +63,8 @@
           </button><!-- /.nav__open -->
 
         </div><!-- /.header__box -->
+
+        {% endif %}
 
       </div>
     </header><!-- .header -->

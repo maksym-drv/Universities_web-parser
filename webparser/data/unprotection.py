@@ -39,7 +39,6 @@ class Unprotector:
             wait = WebDriverWait(driver, 10)
             wait.until(ec.visibility_of_element_located((By.CLASS_NAME, self.university_class)))
         except TimeoutException:
-            print(f'\nIm finish with error!\n')
             return None
 
         unis = driver.find_element(by=By.ID, value = self.university_id)
@@ -48,8 +47,6 @@ class Unprotector:
             uni.click()
 
         raw_page = driver.page_source
-
-        print(f'\nIm finish!\n')
 
         driver.quit()
 
