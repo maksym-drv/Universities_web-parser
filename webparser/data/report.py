@@ -13,7 +13,7 @@ class Report:
             regions = self.regions
             file_name = f'{name}_{id}.xlsx'
             file_path = path.join(settings.MEDIA_ROOT, file_name)
-            writer = pd.ExcelWriter(file_path)
+            writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
 
             yellow_format = writer.book.add_format({'bg_color': 'yellow', 'border': 1})
             gray_format = writer.book.add_format({'bg_color': 'gray', 'border': 1})

@@ -154,7 +154,7 @@ CELERY_TASK_TRACK_STARTED = os.environ.get('CELERY_TASK_TRACK_STARTED')
 # Parser
 
 TARGET_URL = lambda year = datetime.now().year: \
-    'https://vstup.edbo.gov.ua/offers/' if \
+    'https://vstup2022.edbo.gov.ua/offers/' if \
     year == datetime.now().year else f'https://vstup{year}.edbo.gov.ua/offers/' 
 
 REGIONS_URL = 'https://registry.edbo.gov.ua/files/regions.xlsx'
