@@ -32,6 +32,9 @@ DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',') if \
     os.environ.get('ALLOWED_HOSTS') else ['localhost']
 
+CSRF_TRUSTED_ORIGINS = os.environ['CSRF_TRUSTED_ORIGINS'].split(',') if \
+    os.environ.get('CSRF_TRUSTED_ORIGINS') else ['http://localhost']
+
 # Application definition
 
 INSTALLED_APPS = [
